@@ -98,7 +98,7 @@ model hvac_water_storage_example
     Placement(transformation(origin = {-194, -30}, extent = {{-10, -10}, {10, 10}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con2(k = mAir_flow_nominal)  annotation(
     Placement(transformation(origin = {67, 108}, extent = {{-10, -10}, {10, 10}})));
-  Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable dailyScheduleTable(table = [0, 1; 2, 0; 4, 1; 8, 2; 12, 4; 16, 3; 19, 5; 21, 1; 24, 1], timeScale = 3600, period = 86400)  annotation(
+  Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable dailyScheduleTable(table = [0, 1; 2, 0; 4, 1; 8, 3; 12, 2; 16, 4; 21, 1; 24, 1], timeScale = 3600, period = 86400)  annotation(
     Placement(transformation(origin = {-160, 142}, extent = {{-10, -10}, {10, 10}})));
   Buildings.Fluid.Storage.StratifiedEnhanced tan1(redeclare package Medium = MediumWater, VTan = 1.5, dIns = 0.02, hTan = 1.5, m_flow_nominal = mWater_flow_nominal, nSeg = 20) annotation(
     Placement(transformation(origin = {-58, 13}, extent = {{-10, -10}, {10, 10}})));
