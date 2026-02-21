@@ -1,5 +1,4 @@
 within hvac_storage_building.Controls;
-
 model TesStatusController
   parameter Real tempDeadband(unit="K")=1
     "Deadband for temperature control";
@@ -31,7 +30,7 @@ model TesStatusController
     annotation (Placement(transformation(extent={{10,36},{30,56}})));
   Buildings.Controls.OBC.CDL.Logical.Not fullyCharged
     annotation (Placement(transformation(extent={{-34,30},{-14,50}})));
-equation 
+equation
   connect(TesTopTemp, hys2.u) annotation (Line(points={{-122,38},{-80,38},{-80,
           40},{-72,40}}, color={0,0,127}));
   connect(TesBottomTemp, fullyDischarged.u) annotation (Line(points={{-120,-62},

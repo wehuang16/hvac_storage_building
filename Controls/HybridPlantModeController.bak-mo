@@ -1,5 +1,4 @@
 within hvac_storage_building.Controls;
-
 model HybridPlantModeController
   Buildings.Controls.OBC.CDL.Interfaces.IntegerInput modeInput annotation(
     Placement(transformation(origin = {-122, 84}, extent = {{-20, -20}, {20, 20}}), iconTransformation(origin = {-122, 84}, extent = {{-20, -20}, {20, 20}})));
@@ -23,9 +22,9 @@ equation
   connect(modeInput, intToRea.u) annotation(
     Line(points = {{-122, 84}, {-86, 84}}, color = {255, 127, 0}));
   connect(modeZone, intToRea1.u) annotation(
-    Line(points = {{-122, 24}, {-74, 24}, {-74, 30}}, color = {255, 127, 0}));
+    Line(points={{-122,24},{-75,24},{-75,30}},        color = {255, 127, 0}));
   connect(modeHotTes, intToRea11.u) annotation(
-    Line(points = {{-124, -36}, {-78, -36}, {-78, -30}}, color = {255, 127, 0}));
+    Line(points={{-124,-36},{-79,-36},{-79,-30}},        color = {255, 127, 0}));
   connect(modeColdTes, intToRea111.u) annotation(
-    Line(points = {{-124, -84}, {-80, -84}, {-80, -82}}, color = {255, 127, 0}));
+    Line(points={{-124,-84},{-81,-84},{-81,-82}},        color = {255, 127, 0}));
 end HybridPlantModeController;
