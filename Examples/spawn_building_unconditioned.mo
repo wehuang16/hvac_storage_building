@@ -1,5 +1,4 @@
 within hvac_storage_building.Examples;
-
 model spawn_building_unconditioned
   extends Modelica.Icons.Example;
   package Medium=Buildings.Media.Air
