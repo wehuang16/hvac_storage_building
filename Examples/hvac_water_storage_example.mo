@@ -5,7 +5,8 @@ model hvac_water_storage_example
 
   parameter Integer numZon=9 "number of zones";
   parameter Integer nSeg=20 "number of tank segments";
-  parameter Real heatLossRate=5 "heat loss rate in W/K";
+  parameter Real heatLossRateTank=5 "heat loss rate in W/K";
+  parameter Real heatLossRateVolumizer=0.5 "heat loss rate in W/K";
   HeatPumps.simple_heat_pump_2d simple_heat_pump_2d(redeclare package Medium_con = MediumWater, mCon_flow_nominal = mSystemWater_flow_nominal)  annotation(
     Placement(transformation(origin = {-136, 26}, extent = {{-20, -20}, {20, 20}})));
   HeatPumps.BaseClasses.HeaPumPer heaPumPer annotation(
@@ -34,9 +35,9 @@ model hvac_water_storage_example
     "Nominal mass flow rate";
   Buildings.Fluid.Storage.StratifiedEnhanced tanHot(
     m_flow_nominal=mSystemWater_flow_nominal,
-    VTan=0.1136,
-    hTan=0.6548,
-    dIns=0.0450,
+    VTan=1,
+    hTan=1.5,
+    dIns=0.02,
     nSeg=nSeg,
     redeclare package Medium = MediumWater,
     T_start=313.15) annotation (Placement(transformation(origin={-20,8}, extent
@@ -77,16 +78,13 @@ model hvac_water_storage_example
     Placement(transformation(origin = {-52, -24}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con(k=273.15 + 20)    annotation(
     Placement(transformation(origin={-262,-10},  extent = {{-10, -10}, {10, 10}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con2[numZon](k=
-        mHxAir_flow_nominal) annotation (Placement(transformation(origin={141,138},
-          extent={{-10,-10},{10,10}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable dailyScheduleTable(table = [0, 1; 2, 0; 4, 1; 8, 3; 12, 2; 16, 4; 21, 1; 24, 1], timeScale = 3600, period = 86400)  annotation(
     Placement(transformation(origin={-244,150},    extent = {{-10, -10}, {10, 10}})));
   Buildings.Fluid.Storage.StratifiedEnhanced tanCold(
     redeclare package Medium = MediumWater,
-    VTan=0.1136,
-    dIns=0.0450,
-    hTan=0.6548,
+    VTan=1,
+    dIns=0.02,
+    hTan=1.5,
     m_flow_nominal=mSystemWater_flow_nominal,
     nSeg=nSeg,
     T_start=282.15) annotation (Placement(transformation(origin={-58,13},
@@ -118,18 +116,18 @@ model hvac_water_storage_example
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=90,
         origin={108,-44})));
-  Buildings.Fluid.MixingVolumes.MixingVolume vol1(
-    redeclare package Medium = MediumAir,
+  Buildings.Fluid.MixingVolumes.MixingVolume volumizer(
+    redeclare package Medium = MediumWater,
     m_flow_nominal=1,
-    V=0.001,
-    nPorts=20)         annotation (Placement(transformation(extent={{52,88},{72,108}})));
+    V=0.05,
+    nPorts=20) annotation (Placement(transformation(extent={{52,88},{72,108}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput outside_air_temperature
     annotation (Placement(transformation(extent={{-352,20},{-312,60}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput zone_load_actual[numZon]
     annotation (Placement(transformation(extent={{236,22},{276,64}})));
-  BaseClasses.TankLoss tankLossCold(nSeg=nSeg, heatLossRate=heatLossRate)
+  BaseClasses.TankLoss tankLossCold(nSeg=nSeg, heatLossRate=heatLossRateTank)
     annotation (Placement(transformation(extent={{-144,-114},{-124,-94}})));
-  BaseClasses.TankLoss tankLossHot(nSeg=nSeg, heatLossRate=heatLossRate)
+  BaseClasses.TankLoss tankLossHot(nSeg=nSeg, heatLossRate=heatLossRateTank)
     annotation (Placement(transformation(extent={{-90,-146},{-70,-126}})));
   Buildings.Fluid.Movers.FlowControlled_m_flow mov2[numZon](
     redeclare package Medium = MediumWater,
@@ -151,6 +149,8 @@ model hvac_water_storage_example
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=270,
         origin={194,124})));
+  BaseClasses.VolumizerLoss volumizerLoss(heatLossRate=heatLossRateVolumizer)
+    annotation (Placement(transformation(extent={{-2,170},{18,190}})));
 equation
   connect(heaPumPer.MaxHeaPumCapHea, simple_heat_pump_2d.MaxHeaPumCapHea) annotation(
     Line(points={{-176,39.2},{-166,39.2},{-166,45.3},{-157.1,45.3}},        color = {0, 0, 127}));
@@ -234,8 +234,8 @@ equation
                  color={0,0,127}));
   connect(bou1.ports[1], jun1.port_3) annotation (Line(points={{-92,-46},{-21,-46},
           {-21,-54}}, color={0,127,255}));
-  connect(mov1.port_b, vol1.ports[1]) annotation (Line(points={{36,80},{48,80},{
-          48,88},{60.1,88}}, color={0,127,255}));
+  connect(mov1.port_b, volumizer.ports[1]) annotation (Line(points={{36,80},{48,
+          80},{48,88},{60.1,88}}, color={0,127,255}));
   connect(outside_air_temperature, heaPumPer.TOut) annotation (Line(points={{-332,
           40},{-266,40},{-266,25.4},{-200,25.4}}, color={0,0,127}));
   connect(tankLossCold.port_a, tanCold.heaPorVol) annotation (Line(points={{-123.4,
@@ -249,18 +249,16 @@ equation
   connect(outside_air_temperature, tankLossHot.outside_air_temperature)
     annotation (Line(points={{-332,40},{-288,40},{-288,-104},{-154,-104},{-154,-136},
           {-92,-136}}, color={0,0,127}));
-  connect(vol1.ports[2], jun1.port_1) annotation (Line(points={{60.3,88},{56,88},
-          {56,-80},{-11,-80},{-11,-64}}, color={0,127,255}));
-  connect(vol1.ports[3:11], mov2.port_a) annotation (Line(points={{62.1,88},{62.1,
-          82},{76,82},{76,76}}, color={0,127,255}));
+  connect(volumizer.ports[2], jun1.port_1) annotation (Line(points={{60.3,88},{56,
+          88},{56,-80},{-11,-80},{-11,-64}}, color={0,127,255}));
+  connect(volumizer.ports[3:11], mov2.port_a) annotation (Line(points={{62.1,88},
+          {62.1,82},{76,82},{76,76}}, color={0,127,255}));
   connect(mov2.port_b, cooCoi.port_a1) annotation (Line(points={{76,56},{76,46},
           {81.2214,46},{81.2214,40.2232}}, color={0,127,255}));
-  connect(cooCoi.port_b1, vol1.ports[12:20]) annotation (Line(points={{81.2214,13.7364},
-          {81.2214,6},{63.9,6},{63.9,88}}, color={0,127,255}));
+  connect(cooCoi.port_b1, volumizer.ports[12:20]) annotation (Line(points={{81.2214,
+          13.7364},{81.2214,6},{63.9,6},{63.9,88}}, color={0,127,255}));
   connect(con1.y, mov2.m_flow_in) annotation (Line(points={{105,122},{114,122},{
           114,66},{88,66}}, color={0,0,127}));
-  connect(con2.y, mov11.m_flow_in) annotation (Line(points={{153,138},{162,138},
-          {162,82},{116,82},{116,65},{123,65}}, color={0,0,127}));
   connect(mov11.port_a, cooCoi.port_b2) annotation (Line(points={{135,55},{136,55},
           {136,46},{104.508,46},{104.508,40.2232}}, color={0,127,255}));
   connect(cooCoi.port_a2, bou2.ports[1:9]) annotation (Line(points={{104.508,
@@ -268,6 +266,10 @@ equation
                                                       color={0,127,255}));
   connect(mov11.port_b, bou3.ports[1:9]) annotation (Line(points={{135,75},{135,
           84},{195.778,84},{195.778,114}}, color={0,127,255}));
+  connect(volumizerLoss.port_a, volumizer.heatPort) annotation (Line(points={{18.6,
+          180},{46,180},{46,98},{52,98}}, color={191,0,0}));
+  connect(outside_air_temperature, volumizerLoss.outside_air_temperature)
+    annotation (Line(points={{-332,40},{-332,180},{-4,180}}, color={0,0,127}));
   annotation(
     experiment(StartTime = 0, StopTime = 432000, Tolerance = 1e-06, Interval = 60),
     __OpenModelica_commandLineOptions = "--matchingAlgorithm=PFPlusExt --indexReductionMethod=dynamicStateSelection -d=initialization,NLSanalyticJacobian",

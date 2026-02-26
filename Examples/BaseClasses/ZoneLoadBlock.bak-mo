@@ -1,0 +1,25 @@
+within hvac_storage_building.Examples.BaseClasses;
+block ZoneLoadBlock
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput zone_load_request annotation
+    (Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=0,
+        origin={-120,72})));
+  ZoneThermalMode zoneThermalMode
+    annotation (Placement(transformation(extent={{-56,58},{-36,78}})));
+  Buildings.Controls.OBC.CDL.Interfaces.IntegerInput ySysHeaCooMod annotation (
+      Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=0,
+        origin={-120,-30})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput zone_load_actual annotation
+    (Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=0,
+        origin={120,64})));
+equation
+  connect(zone_load_request, zoneThermalMode.zone_load_request) annotation (
+      Line(points={{-120,72},{-68,72},{-68,68},{-58,68}}, color={0,0,127}));
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+        coordinateSystem(preserveAspectRatio=false)));
+end ZoneLoadBlock;

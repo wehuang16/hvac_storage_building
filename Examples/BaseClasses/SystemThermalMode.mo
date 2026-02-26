@@ -26,13 +26,19 @@ block SystemThermalMode
   Buildings.Controls.OBC.CDL.Integers.GreaterEqual intGreEqu
     annotation (Placement(transformation(extent={{48,-10},{68,10}})));
   Buildings.Controls.OBC.CDL.Interfaces.IntegerOutput ySysHeaCooMod
-    annotation (Placement(transformation(extent={{154,42},{194,82}})));
+    annotation (Placement(transformation(extent={{160,-20},{200,20}})));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToInteger booToInt(integerFalse
       =-1) annotation (Placement(transformation(extent={{118,-16},{138,4}})));
   Buildings.Controls.OBC.CDL.Integers.LessEqualThreshold intLesEquThr
     annotation (Placement(transformation(extent={{48,78},{68,98}})));
   Buildings.Controls.OBC.CDL.Integers.LessEqualThreshold intLesEquThr1
     annotation (Placement(transformation(extent={{54,42},{74,62}})));
+  Buildings.Controls.OBC.CDL.Logical.And and2
+    annotation (Placement(transformation(extent={{84,60},{104,80}})));
+  Buildings.Controls.OBC.CDL.Integers.Switch intSwi
+    annotation (Placement(transformation(extent={{122,60},{142,80}})));
+  Buildings.Controls.OBC.CDL.Integers.Sources.Constant conInt(k=0)
+    annotation (Placement(transformation(extent={{82,104},{102,124}})));
 equation
   connect(reqSpaCon,intGreThr. u) annotation (Line(points={{-120,0},{-84,0},{
           -84,26},{-74,26}},    color={255,127,0}));
@@ -57,6 +63,20 @@ equation
   connect(mulSumInt1.y, intLesEquThr1.u) annotation (Line(points={{34,-26},{46,
           -26},{46,-16},{38,-16},{38,-2},{36,-2},{36,12},{42,12},{42,18},{46,18},
           {46,34},{42,34},{42,52},{52,52}}, color={255,127,0}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-        coordinateSystem(preserveAspectRatio=false)));
+  connect(intLesEquThr.y, and2.u1) annotation (Line(points={{70,88},{80,88},{80,
+          78},{78,78},{78,70},{82,70}}, color={255,0,255}));
+  connect(intLesEquThr1.y, and2.u2)
+    annotation (Line(points={{76,52},{82,52},{82,62}}, color={255,0,255}));
+  connect(and2.y, intSwi.u2)
+    annotation (Line(points={{106,70},{120,70}}, color={255,0,255}));
+  connect(conInt.y, intSwi.u1) annotation (Line(points={{104,114},{120,114},{
+          120,78}}, color={255,127,0}));
+  connect(booToInt.y, intSwi.u3) annotation (Line(points={{140,-6},{148,-6},{
+          148,52},{120,52},{120,62}}, color={255,127,0}));
+  connect(intSwi.y, ySysHeaCooMod) annotation (Line(points={{144,70},{154,70},{
+          154,0},{180,0}}, color={255,127,0}));
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -100},{160,100}})),                                  Diagram(
+        coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{160,
+            100}})));
 end SystemThermalMode;
