@@ -3,7 +3,8 @@ block VolumizerLoss
 
 
     parameter Real heatLossRate=0.5 "heat loss rate in W/K";
-  Buildings.HeatTransfer.Convection.Interior con1(A=1, hFixed=heatLossRate)
+  Buildings.HeatTransfer.Convection.Interior con1(A=1, hFixed=heatLossRate,
+    til=0)
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,

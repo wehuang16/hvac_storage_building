@@ -3,8 +3,11 @@ block TankLoss
 
     parameter Integer nSeg=20 "number of tank segments";
     parameter Real heatLossRate=5 "heat loss rate in W/K";
-  Buildings.HeatTransfer.Convection.Interior con1[nSeg](A=1, hFixed=
-        heatLossRate/nSeg) annotation (Placement(transformation(
+  Buildings.HeatTransfer.Convection.Interior con1[nSeg](
+    A=1,
+    conMod=Buildings.HeatTransfer.Types.InteriorConvection.Fixed,
+    hFixed=heatLossRate/nSeg,
+    til=0)                 annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={32,2})));

@@ -1,0 +1,19 @@
+within hvac_storage_building.Examples.BaseClasses;
+block ThermalStorageStatus
+
+
+      parameter Real HeatingTankFullTemperature=273.15+45 "K";
+  parameter Real HeatingTankEmptyTemperature=273.15+28 "K";
+
+      parameter Real TankHysteresisTemperature=0.5 "K";
+
+  Buildings.Controls.OBC.CDL.Reals.Hysteresis hys
+    annotation (Placement(transformation(extent={{-44,34},{-24,54}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput TSto
+    "thermal storage temperature"
+    annotation (Placement(transformation(extent={{-140,-20},{-100,20}})));
+  Buildings.Controls.OBC.CDL.Reals.Hysteresis hys1
+    annotation (Placement(transformation(extent={{-40,-68},{-20,-48}})));
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+        coordinateSystem(preserveAspectRatio=false)));
+end ThermalStorageStatus;

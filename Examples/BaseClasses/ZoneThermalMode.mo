@@ -1,8 +1,8 @@
 within hvac_storage_building.Examples.BaseClasses;
 block ZoneThermalMode
   parameter Real smallThermalPowerLimit=1 "in W";
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput zone_load_request annotation
-    (Placement(transformation(
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput ZonLoaReq annotation (
+      Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=0,
         origin={-120,0})));
@@ -25,10 +25,10 @@ block ZoneThermalMode
   Buildings.Controls.OBC.CDL.Integers.Sources.Constant conInt2(k=0)
     annotation (Placement(transformation(extent={{-24,-90},{-4,-70}})));
 equation
-  connect(zone_load_request, greThr.u) annotation (Line(points={{-120,0},{-68,0},
-          {-68,46},{-58,46}}, color={0,0,127}));
-  connect(zone_load_request, lesThr.u) annotation (Line(points={{-120,0},{-70,0},
-          {-70,-32},{-60,-32}}, color={0,0,127}));
+  connect(ZonLoaReq, greThr.u) annotation (Line(points={{-120,0},{-68,0},{-68,
+          46},{-58,46}}, color={0,0,127}));
+  connect(ZonLoaReq, lesThr.u) annotation (Line(points={{-120,0},{-70,0},{-70,-32},
+          {-60,-32}}, color={0,0,127}));
   connect(greThr.y, intSwi.u2) annotation (Line(points={{-34,46},{20,46},{20,44},
           {28,44}}, color={255,0,255}));
   connect(lesThr.y, intSwi1.u2)

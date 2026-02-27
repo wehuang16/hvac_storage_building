@@ -1,7 +1,12 @@
 TankLoss
+TankAverageTemperature
 VolumizerLoss
 SystemThermalMode
 ZoneThermalMode
 ZoneBlock
 ValueScaleDown
 SeparateHeatingCoolingThermalEnergy
+HeatingThermalStorageStatus
+CoolingThermalStorageStatus
+UnservedLoadCalculation
+HvacWaterStorage

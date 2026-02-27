@@ -1,28 +1,28 @@
 within hvac_storage_building.Examples.BaseClasses;
 block SystemThermalMode
 
-  parameter Integer nZones=20 "number of tank segments";
-  Buildings.Controls.OBC.CDL.Integers.GreaterThreshold intGreThr[nZones]
+  parameter Integer numZon=20 "number of zones";
+  Buildings.Controls.OBC.CDL.Integers.GreaterThreshold intGreThr[numZon]
     annotation (Placement(transformation(extent={{-72,16},{-52,36}})));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToInteger
                                                        booToInt1
-                                                               [nZones]
+                                                               [numZon]
     annotation (Placement(transformation(extent={{-28,16},{-8,36}})));
-  Buildings.Controls.OBC.CDL.Integers.LessThreshold intLesThr[nZones]
+  Buildings.Controls.OBC.CDL.Integers.LessThreshold intLesThr[numZon]
     annotation (Placement(transformation(extent={{-70,-36},{-50,-16}})));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToInteger
-                                                       booToInt2[nZones]
+                                                       booToInt2[numZon]
     annotation (Placement(transformation(extent={{-34,-36},{-14,-16}})));
   Buildings.Controls.OBC.CDL.Integers.MultiSum
-                                            mulSumInt(nin=nZones)
+                                            mulSumInt(nin=numZon)
     annotation (Placement(transformation(extent={{14,16},{34,36}})));
   Buildings.Controls.OBC.CDL.Integers.MultiSum
-                                            mulSumInt1(nin=nZones)
+                                            mulSumInt1(nin=numZon)
     annotation (Placement(transformation(extent={{12,-36},{32,-16}})));
-  Buildings.Controls.OBC.CDL.Interfaces.IntegerInput reqSpaCon[nZones]
+  Buildings.Controls.OBC.CDL.Interfaces.IntegerInput reqSpaCon[numZon]
     "request space conditioning" annotation (Placement(transformation(extent={{-140,
-            -20},{-100,20}}),       iconTransformation(extent={{-142,-66},{-102,
-            -26}})));
+            -20},{-100,20}}),       iconTransformation(extent={{-140,-20},{-100,
+            20}})));
   Buildings.Controls.OBC.CDL.Integers.GreaterEqual intGreEqu
     annotation (Placement(transformation(extent={{48,-10},{68,10}})));
   Buildings.Controls.OBC.CDL.Interfaces.IntegerOutput ySysHeaCooMod
