@@ -1,5 +1,5 @@
 within hvac_storage_building.HeatPumps;
-model simple_heat_pump_2d
+model simple_heat_pump_2d_v2
 
    replaceable package Medium_con = Buildings.Media.Water;
   package MediumPropyleneGlycol =
@@ -98,10 +98,10 @@ model simple_heat_pump_2d
     annotation (Placement(transformation(extent={{-8,-174},{12,-154}})));
   Buildings.Controls.OBC.CDL.Logical.Not not1
     annotation (Placement(transformation(extent={{-50,-190},{-30,-170}})));
-  BaseClasses.heat_pump_cycling_timer_controller heat_pump_cycling_controller_heating(
+  CCC.Fluid.HeatPumps.Subsequences.heat_pump_cycling_timer_controller heat_pump_cycling_controller_heating(
       cycling_wait_time=cycling_wait_time)
     annotation (Placement(transformation(extent={{34,162},{54,182}})));
-  BaseClasses.heat_pump_cycling_timer_controller heat_pump_cycling_controller_cooling(
+  CCC.Fluid.HeatPumps.Subsequences.heat_pump_cycling_timer_controller heat_pump_cycling_controller_cooling(
       cycling_wait_time=cycling_wait_time)
     annotation (Placement(transformation(extent={{36,98},{56,118}})));
 equation
@@ -192,12 +192,18 @@ equation
           -180},{-28,-180}}, color={255,0,255}));
   connect(HeaPumMod, not1.u) annotation (Line(points={{310,14},{280,14},{280,
           -198},{-52,-198},{-52,-180},{-52,-180}}, color={255,0,255}));
+  connect(MaxHeaPumCapHea, heat_pump_cycling_controller_heating.MaxHeaPumCap)
+    annotation (Line(points={{-112,186},{-68,186},{-68,179.7},{32.9,179.7}},
+        color={0,0,127}));
   connect(MinHeaPumCapHea, heat_pump_cycling_controller_heating.MinHeaPumCap)
     annotation (Line(points={{-111,126},{-34,126},{-34,173.7},{32.8,173.7}},
         color={0,0,127}));
   connect(mul1.y, heat_pump_cycling_controller_heating.QHeaPum_flow_request)
     annotation (Line(points={{1,195},{10,195},{10,167.7},{32.8,167.7}}, color={
           0,0,127}));
+  connect(MaxHeaPumCapCoo, heat_pump_cycling_controller_cooling.MaxHeaPumCap)
+    annotation (Line(points={{-112,156},{32,156},{32,124},{30,124},{30,115.7},{
+          34.9,115.7}}, color={0,0,127}));
   connect(MinHeaPumCapCoo, heat_pump_cycling_controller_cooling.MinHeaPumCap)
     annotation (Line(points={{-111,96},{-62,96},{-62,109.7},{34.8,109.7}},
         color={0,0,127}));
@@ -229,4 +235,4 @@ equation
             -200},{300,200}})),                                  Diagram(
         coordinateSystem(preserveAspectRatio=false, extent={{-100,-200},{300,
             200}})));
-end simple_heat_pump_2d;
+end simple_heat_pump_2d_v2;

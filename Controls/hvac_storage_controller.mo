@@ -5,11 +5,11 @@ model hvac_storage_controller
   Buildings.Controls.OBC.CDL.Interfaces.IntegerInput systemCommand
     "0 = do nothing; 1=baseline; 2=charge hot; 3=charge cold; 4 = discharge"
     annotation (Placement(transformation(extent={{-140,58},{-100,98}})));
-  Modelica.Blocks.Tables.CombiTable1Ds equipmentControl(table=[0,1,0,0,0,273.15
-         + 20,1,0; 1,1,0,1,1,273.15 + 48,1,1; 2,1,0,1,0,273.15 + 55,1,1; 3,1,0,
-        0,1,273.15 + 48,1,0; 4,1,0,1,0.5,273.15 + 55,1,1; 5,0,1,1,1,273.15 + 11,
-        0,1; 6,0,1,1,0,273.15 + 8,0,1; 7,0,1,0,1,273.15 + 11,0,0; 8,0,1,1,0.5,
-        273.15 + 8,0,1],                                   extrapolation=
+  Modelica.Blocks.Tables.CombiTable1Ds equipmentControl(table=[0,0,0,0,0,273.15
+         + 20,1,0; 1,0,0,1,1,273.15 + 48,1,1; 2,-1,0,1,0,273.15 + 55,1,1; 3,1,0,
+        0,1,273.15 + 48,1,0; 4,-0.5,0,1,0.5,273.15 + 55,1,1; 5,0,1,1,1,273.15
+         + 11,0,1; 6,0,1,1,0,273.15 + 8,0,1; 7,0,1,0,1,273.15 + 11,0,0; 8,0,1,1,
+        0.5,273.15 + 8,0,1],                               extrapolation=
         Modelica.Blocks.Types.Extrapolation.NoExtrapolation)
     annotation (Placement(transformation(extent={{46,20},{66,40}})));
   Buildings.Controls.OBC.CDL.Conversions.IntegerToReal intToRea
@@ -89,20 +89,8 @@ equation
           {120,-82}}, color={255,0,255}));
  connect(loadRequest, intToRea2.u) annotation(
     Line(points = {{-120, 26}, {-68, 26}, {-68, 6}}, color = {255, 127, 0}));
-  connect(intToRea2.y, systemModePre.u1) annotation (Line(points={{-44,6},{-40,
-          6},{-40,58},{-32,58},{-32,52}}, color={0,0,127}));
-  connect(intToRea.y, systemModePre.u2) annotation (Line(points={{-52,54},{-38,
-          54},{-38,40},{-32,40}}, color={0,0,127}));
   connect(tesColdStatus, intToRea3.u) annotation (Line(points={{-120,-82},{-95,
           -82},{-95,-94},{-72,-94}}, color={255,127,0}));
-  connect(intToRea1.y, tesStatusTable.u2) annotation (Line(points={{-56,-60},{
-          -40,-60},{-40,-52},{-28,-52}}, color={0,0,127}));
-  connect(intToRea3.y, tesStatusTable.u1) annotation (Line(points={{-48,-94},{
-          -38,-94},{-38,-40},{-28,-40}}, color={0,0,127}));
-  connect(tesStatusTable.y, systemModeFinal.u1) annotation (Line(points={{-5,
-          -46},{6,-46},{6,-8},{8,-8}}, color={0,0,127}));
-  connect(systemModePre.y, systemModeFinal.u2)
-    annotation (Line(points={{-9,46},{8,46},{8,-20}}, color={0,0,127}));
   connect(systemModeFinal.y, systemMode) annotation (Line(points={{31,-14},{38,
           -14},{38,120},{0,120}}, color={0,0,127}));
   connect(systemModeFinal.y, equipmentControl.u) annotation (Line(points={{31,
@@ -121,4 +109,16 @@ equation
           62,30},{62,-32},{52,-32}}, color={0,0,127}));
   connect(equipmentControl.y[7], greThr3.u) annotation (Line(points={{67,30},{
           62,30},{62,-86},{58,-86}}, color={0,0,127}));
+  connect(intToRea.y, systemModePre.u1) annotation (Line(points={{-52,54},{-40,
+          54},{-40,52},{-32,52}}, color={0,0,127}));
+  connect(intToRea2.y, systemModePre.u2)
+    annotation (Line(points={{-44,6},{-32,6},{-32,40}}, color={0,0,127}));
+  connect(intToRea1.y, tesStatusTable.u1) annotation (Line(points={{-56,-60},{
+          -38,-60},{-38,-40},{-28,-40}}, color={0,0,127}));
+  connect(intToRea3.y, tesStatusTable.u2) annotation (Line(points={{-48,-94},{
+          -36,-94},{-36,-52},{-28,-52}}, color={0,0,127}));
+  connect(tesStatusTable.y, systemModeFinal.u2) annotation (Line(points={{-5,
+          -46},{0,-46},{0,-20},{8,-20}}, color={0,0,127}));
+  connect(systemModePre.y, systemModeFinal.u1)
+    annotation (Line(points={{-9,46},{0,46},{0,-8},{8,-8}}, color={0,0,127}));
 end hvac_storage_controller;

@@ -1,12 +1,10 @@
 within hvac_storage_building.Examples.BaseClasses;
-model HvacWaterStorage
-
+model HvacWaterStorage2
 
   parameter Integer numZon=3 "number of zones";
   parameter Integer nSeg=20 "number of tank segments";
   parameter Real heatLossRateTank=5 "heat loss rate in W/K";
   parameter Real heatLossRateVolumizer=0.5 "heat loss rate in W/K";
-
 
     parameter Real ZoneAirVolume=1000 "m3";
   parameter Real HeatingAmbientTemperature=273.15+26 "K";
@@ -65,14 +63,6 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
     Placement(transformation(origin = {-28, 94}, extent = {{-10, -10}, {10, 10}})));
   Buildings.Fluid.FixedResistances.Junction jun1(redeclare package Medium = MediumWater, dp_nominal = {0, 0, 0}, m_flow_nominal = {1, -1, -1})  annotation(
     Placement(transformation(origin = {-21, -64}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
-  Buildings.Fluid.Actuators.Valves.TwoWayLinear val(redeclare package Medium = MediumWater, m_flow_nominal = mSystemWater_flow_nominal, dpValve_nominal = dpSystemValve_nominal) annotation(
-    Placement(transformation(origin = {-4, 46}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-  Buildings.Fluid.Actuators.Valves.TwoWayLinear val1(redeclare package Medium = MediumWater, m_flow_nominal = mSystemWater_flow_nominal, dpValve_nominal = dpSystemValve_nominal) annotation(
-    Placement(transformation(origin = {7, -22}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-  Buildings.Fluid.Actuators.Valves.TwoWayLinear val2(redeclare package Medium = MediumWater, m_flow_nominal = mSystemWater_flow_nominal, dpValve_nominal = dpSystemValve_nominal) annotation(
-    Placement(transformation(origin = {-58, 48}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-  Buildings.Fluid.Actuators.Valves.TwoWayLinear val3(redeclare package Medium = MediumWater, m_flow_nominal = mSystemWater_flow_nominal, dpValve_nominal = dpSystemValve_nominal) annotation(
-    Placement(transformation(origin = {-52, -24}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con(k=273.15 + 20)    annotation(
     Placement(transformation(origin={-262,-10},  extent = {{-10, -10}, {10, 10}})));
   Buildings.Fluid.Storage.StratifiedEnhanced tanCold(
@@ -175,6 +165,18 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
         origin={220,-60})));
   UnservedLoadCalculation unservedLoadCalculation[numZon]
     annotation (Placement(transformation(extent={{160,-16},{180,4}})));
+  Buildings.Fluid.Movers.FlowControlled_m_flow mov2(
+    redeclare package Medium = MediumWater,
+    m_flow_nominal=mSystemWater_flow_nominal,
+    addPowerToMedium=false)                                                                                                                                       annotation(
+    Placement(transformation(origin={-8,48},     extent = {{-10, -10}, {10, 10}},
+        rotation=90)));
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai2(k=
+        mSystemWater_flow_nominal)                                      annotation (
+      Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={-48,50})));
 equation
   connect(heaPumPer.MaxHeaPumCapHea, simple_heat_pump_2d.MaxHeaPumCapHea) annotation(
     Line(points={{-176,39.2},{-166,39.2},{-166,45.3},{-157.1,45.3}},        color = {0, 0, 127}));
@@ -199,34 +201,10 @@ equation
     Line(points = {{-18, 94}, {16, 94}, {16, 80}}, color = {0, 127, 255}));
   connect(jun1.port_2, simple_heat_pump_2d.port_a) annotation(
     Line(points={{-31,-64},{-166,-64},{-166,29.4},{-157,29.4}},      color = {0, 127, 255}));
-  connect(jun.port_3, val.port_a) annotation(
-    Line(points = {{-28, 84}, {-4, 84}, {-4, 56}}, color = {0, 127, 255}));
-  connect(val.port_b, tanHot.port_a)
-    annotation (Line(points={{-4,36},{-20,36},{-20,18}}, color={0,127,255}));
-  connect(tanHot.port_b, val1.port_a)
-    annotation (Line(points={{-20,-2},{7,-2},{7,-12}}, color={0,127,255}));
-  connect(val1.port_b, jun1.port_3) annotation(
-    Line(points={{7,-32},{-21,-32},{-21,-54}},        color = {0, 127, 255}));
-  connect(jun.port_3, val2.port_a) annotation(
-    Line(points = {{-28, 84}, {-58, 84}, {-58, 58}}, color = {0, 127, 255}));
-  connect(jun1.port_3, val3.port_b) annotation(
-    Line(points={{-21,-54},{-52,-54},{-52,-34}},        color = {0, 127, 255}));
-  connect(val2.port_b, tanCold.port_b) annotation (Line(points={{-58,38},{-78,
-          38},{-78,3},{-58,3}}, color={0,127,255}));
-  connect(tanCold.port_a, val3.port_a) annotation (Line(points={{-58,23},{-46,
-          23},{-46,-14},{-52,-14}}, color={0,127,255}));
   connect(gai.y, mov.m_flow_in)
     annotation (Line(points={{-86,104},{-86,104},{-86,88}}, color={0,0,127}));
   connect(gai1.y, mov1.m_flow_in) annotation (Line(points={{28,104},{26,104},{
           26,92},{26,92}}, color={0,0,127}));
-  connect(hvac_storage_controller.HotTesValve, val.y) annotation (Line(points={{-156,
-          162.6},{-98,162.6},{-98,140},{8,140},{8,46}},       color={0,0,127}));
-  connect(val.y, val1.y) annotation (Line(points={{8,46},{20,46},{20,44},{28,44},
-          {28,-22},{19,-22}}, color={0,0,127}));
-  connect(val2.y, val3.y) annotation (Line(points={{-46,48},{-32,48},{-32,-24},
-          {-40,-24}}, color={0,0,127}));
-  connect(hvac_storage_controller.ColdTesValve, val2.y)
-    annotation (Line(points={{-156,160},{-46,160},{-46,48}}, color={0,0,127}));
   connect(hvac_storage_controller.HPMode, simple_heat_pump_2d.HeaPumMod)
     annotation (Line(points={{-155.8,146.8},{-142,146.8},{-142,118},{-108,118},{
           -108,23.4},{-114.8,23.4}},  color={255,0,255}));
@@ -328,10 +306,25 @@ equation
           0},{158,0}}, color={0,0,127}));
   connect(unservedLoadCalculation.ZonLoaUns, ZonLoaUns) annotation (Line(points
         ={{182,-6},{194,-6},{194,-60},{220,-60}}, color={0,0,127}));
+  connect(tanHot.port_b, jun1.port_3) annotation (Line(points={{-20,-2},{-20,
+          -46},{-21,-46},{-21,-54}}, color={0,127,255}));
+  connect(jun.port_3, tanCold.port_b) annotation (Line(points={{-28,84},{-28,24},
+          {-38,24},{-38,-2},{-58,-2},{-58,3}}, color={0,127,255}));
+  connect(tanCold.port_a, jun1.port_3) annotation (Line(points={{-58,23},{-74,
+          23},{-74,-54},{-21,-54}}, color={0,127,255}));
+  connect(mov2.port_a, tanHot.port_a) annotation (Line(points={{-8,38},{-8,24},
+          {-20,24},{-20,18}}, color={0,127,255}));
+  connect(mov2.port_b, jun.port_3) annotation (Line(points={{-8,58},{-8,78},{
+          -28,78},{-28,84}}, color={0,127,255}));
+  connect(gai2.y, mov2.m_flow_in) annotation (Line(points={{-36,50},{-26,50},{
+          -26,48},{-20,48}}, color={0,0,127}));
+  connect(hvac_storage_controller.HotTesValve, gai2.u) annotation (Line(points=
+          {{-156,162.6},{-66,162.6},{-66,58},{-68,58},{-68,50},{-60,50}}, color
+        ={0,0,127}));
   annotation(
     experiment(StartTime = 0, StopTime = 432000, Tolerance = 1e-06, Interval = 60),
     __OpenModelica_commandLineOptions = "--matchingAlgorithm=PFPlusExt --indexReductionMethod=dynamicStateSelection -d=initialization,NLSanalyticJacobian",
     __OpenModelica_simulationFlags(lv = "LOG_STDOUT,LOG_ASSERT,LOG_STATS", s = "cvode", variableFilter = ".*"),
   Diagram(coordinateSystem(extent={{-340,-100},{200,100}})),
   Icon(coordinateSystem(extent={{-340,-100},{200,100}})));
-end HvacWaterStorage;
+end HvacWaterStorage2;

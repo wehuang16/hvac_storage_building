@@ -1,8 +1,10 @@
 within hvac_storage_building.Examples;
 model hvac_water_storage_example_original
   extends Modelica.Icons.Example;
-  HeatPumps.simple_heat_pump_2d simple_heat_pump_2d(redeclare package Medium_con = MediumWater, mCon_flow_nominal = mWater_flow_nominal)  annotation(
-    Placement(transformation(origin = {-136, 26}, extent = {{-20, -20}, {20, 20}})));
+  HeatPumps.simple_heat_pump_2d_old simple_heat_pump_2d(redeclare package
+      Medium_con = MediumWater, mCon_flow_nominal=mWater_flow_nominal)
+    annotation (Placement(transformation(origin={-136,26}, extent={{-20,-20},{
+            20,20}})));
   HeatPumps.BaseClasses.HeaPumPer heaPumPer annotation(
     Placement(transformation(origin = {-188, 30}, extent = {{-10, -10}, {10, 10}})));
 

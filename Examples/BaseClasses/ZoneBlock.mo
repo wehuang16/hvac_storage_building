@@ -144,12 +144,12 @@ block ZoneBlock
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=180,
         origin={268,-44})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort senTemAirOut(redeclare package
-      Medium = MediumAir, m_flow_nominal=mHxAir_flow_nominal)
-    annotation (Placement(transformation(extent={{116,-16},{136,4}})));
   Buildings.Fluid.Sensors.TemperatureTwoPort senTemAirIn(redeclare package
       Medium = MediumAir, m_flow_nominal=mHxAir_flow_nominal)
-                          annotation (Placement(transformation(
+    annotation (Placement(transformation(extent={{116,-16},{136,4}})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort senTemAirOut(redeclare package
+      Medium = MediumAir, m_flow_nominal=mHxAir_flow_nominal) annotation (
+      Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={172,-72})));
@@ -217,7 +217,7 @@ block ZoneBlock
         extent={{-20,-20},{20,20}},
         rotation=0,
         origin={380,-26})));
-  Modelica.Blocks.Sources.RealExpression realExpression(y=cooCoi.Q1_flow)
+  Modelica.Blocks.Sources.RealExpression realExpression(y=cooCoi.Q2_flow)
     annotation (Placement(transformation(extent={{218,76},{238,96}})));
 equation
   connect(zonLoaReq, zoneThermalMode.ZonLoaReq)
@@ -274,12 +274,13 @@ equation
   connect(bou1.ports[1], cooCoi.port_a2) annotation (Line(points={{258,-44},{
           242,-44},{242,-73.3769},{236.108,-73.3769}},
                                                    color={0,127,255}));
-  connect(junConv.port_2, senTemAirOut.port_a) annotation (Line(points={{86,2},
-          {104,2},{104,-6},{116,-6}}, color={0,127,255}));
-  connect(senTemAirOut.port_b, cooCoi.port_a2) annotation (Line(points={{136,-6},
+  connect(junConv.port_2, senTemAirIn.port_a) annotation (Line(points={{86,2},{
+          104,2},{104,-6},{116,-6}}, color={0,127,255}));
+  connect(senTemAirIn.port_b, cooCoi.port_a2) annotation (Line(points={{136,-6},
           {242,-6},{242,-73.3769},{236.108,-73.3769}}, color={0,127,255}));
-  connect(cooCoi.port_b2, senTemAirIn.port_a) annotation (Line(points={{209.622,
-          -73.3769},{188,-73.3769},{188,-72},{182,-72}},         color={0,127,255}));
+  connect(cooCoi.port_b2, senTemAirOut.port_a) annotation (Line(points={{
+          209.622,-73.3769},{188,-73.3769},{188,-72},{182,-72}}, color={0,127,
+          255}));
   connect(cooCoi.port_b1, senTemWaterOut.port_a) annotation (Line(points={{236.108,
           -96.6635},{252,-96.6635},{252,-116}}, color={0,127,255}));
   connect(senTemWaterOut.port_b, movWater.port_a) annotation (Line(points={{252,
@@ -288,8 +289,8 @@ equation
           -96.6635},{190,-96.6635},{190,-126},{184,-126}}, color={0,127,255}));
   connect(senTemWaterIn.port_a, port_a) annotation (Line(points={{164,-126},{122,
           -126},{122,-192},{-104,-192},{-104,-176}}, color={0,127,255}));
-  connect(zoneThermalMode.yZonHeaCooMod, intToRea.u) annotation (Line(points={{
-          -34,72},{20,72},{20,56},{90,56},{90,70},{98,70}}, color={255,127,0}));
+  connect(zoneThermalMode.yZonHeaCooMod, intToRea.u) annotation (Line(points={{-34,72},
+          {20,72},{20,56},{90,56},{90,70},{98,70}},         color={255,127,0}));
   connect(ySysHeaCooMod, intToRea1.u) annotation (Line(points={{-120,26},{90,26},
           {90,34},{100,34}}, color={255,127,0}));
   connect(intToRea.y, hys.u)
@@ -302,7 +303,7 @@ equation
           194,46}}, color={255,0,255}));
   connect(xor.y, not1.u)
     annotation (Line(points={{218,54},{228,54}}, color={255,0,255}));
-  connect(senTemAirIn.port_b, junDiv.port_1) annotation (Line(points={{162,-72},
+  connect(senTemAirOut.port_b, junDiv.port_1) annotation (Line(points={{162,-72},
           {154,-72},{154,-66},{148,-66}}, color={0,127,255}));
   connect(junDiv.port_2, movAirHea.port_a) annotation (Line(points={{128,-66},{
           114,-66},{114,-95},{105,-95}}, color={0,127,255}));
