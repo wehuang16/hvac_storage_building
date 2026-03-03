@@ -23,7 +23,8 @@ model HeaPumPer
   Modelica.Blocks.Tables.CombiTable2Ds combiTable2Ds2(extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, table=[-999,
         283.15,303.15; 283.15,1000,1000; 303.15,1000,1000])                                                                                                                                      annotation(
     Placement(transformation(origin = {13, 29}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Tables.CombiTable2Ds combiTable2Ds21(extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, table = [-999, 283.15, 303.15; 283.15, 4000, 4000; 303.15, 4000, 4000]) annotation(
+  Modelica.Blocks.Tables.CombiTable2Ds combiTable2Ds21(extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, table=[-999,
+        283.15,303.15; 283.15,1000,1000; 303.15,1000,1000])                                                                                                                                       annotation(
     Placement(transformation(origin = {12, -9}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Tables.CombiTable2Ds combiTable2Ds22(extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, table = [-999, 283.15, 303.15; 283.15, 4, 4; 303.15, 4, 4]) annotation(
     Placement(transformation(origin = {5, -56}, extent = {{-10, -10}, {10, 10}})));

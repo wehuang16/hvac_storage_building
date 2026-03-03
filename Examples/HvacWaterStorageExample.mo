@@ -3,17 +3,17 @@ model HvacWaterStorageExample
   BaseClasses.HvacWaterStorage2 hvacWaterStorage(numZon=6)
     annotation (Placement(transformation(extent={{2,-4},{42,16}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable dailyScheduleTable(
-    table=[0,1; 2,1; 4,1; 8,2; 12,2; 16,4; 21,1; 24,1],
+    table=[0,1; 2,1; 4,1; 6,2; 10,3; 16,4; 21,1; 24,1],
     timeScale=3600,
     period=86400)                                                                                                                                                           annotation(
     Placement(transformation(origin={-60,74},      extent = {{-10, -10}, {10, 10}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con(k=273.15 + 20)    annotation(
     Placement(transformation(origin={-96,-2},    extent = {{-10, -10}, {10, 10}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Sin sin(
-    amplitude=2000,
+    amplitude=3000,
     freqHz=1/86400,
-    phase=3.9269908169872,
-    offset=2000)
+    phase=0.78539816339745,
+    offset=1000)
     annotation (Placement(transformation(extent={{-72,-54},{-52,-34}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con1[5](k=0) annotation (
       Placement(transformation(origin={-38,-86}, extent={{-10,-10},{10,10}})));
@@ -33,7 +33,7 @@ equation
     Icon(coordinateSystem(preserveAspectRatio=false)),
     Diagram(coordinateSystem(preserveAspectRatio=false)),
     experiment(
-      StopTime=25000,
+      StopTime=172800,
       Interval=60,
-      __Dymola_Algorithm="Dassl"));
+      __Dymola_Algorithm="Cvode"));
 end HvacWaterStorageExample;

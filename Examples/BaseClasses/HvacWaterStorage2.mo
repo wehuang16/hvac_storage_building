@@ -33,7 +33,7 @@ model HvacWaterStorage2
             0.4);
    parameter Modelica.Units.SI.MassFlowRate mSystemWater_flow_nominal=0.8 "Nominal mass flow rate on the water side";
     parameter Modelica.Units.SI.MassFlowRate mHxWater_flow_nominal=0.15 "Nominal mass flow rate on the water side";
-    parameter Modelica.Units.SI.MassFlowRate mHxAir_flow_nominal=0.4 "Nominal mass flow rate on the air side";
+    parameter Modelica.Units.SI.MassFlowRate mHxAir_flow_nominal=0.15 "Nominal mass flow rate on the air side";
 
     parameter Modelica.Units.SI.PressureDifference dpSystemValve_nominal=100;
 
@@ -117,7 +117,7 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
         origin={-360,-90}), iconTransformation(extent={{-380,-90},{-340,-50}})));
   BaseClasses.VolumizerLoss volumizerLoss(heatLossRate=heatLossRateVolumizer)
     annotation (Placement(transformation(extent={{-2,170},{18,190}})));
-  BaseClasses.ZoneBlock zoneBlock[numZon](
+  ZoneBlock2            zoneBlock[numZon](
     ZoneAirVolume=ZoneAirVolume,
     HeatingAmbientTemperature=HeatingAmbientTemperature,
     CoolingAmbientTemperature=CoolingAmbientTemperature,

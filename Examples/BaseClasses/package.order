@@ -4,6 +4,7 @@ VolumizerLoss
 SystemThermalMode
 ZoneThermalMode
 ZoneBlock
+ZoneBlock2
 ValueScaleDown
 SeparateHeatingCoolingThermalEnergy
 HeatingThermalStorageStatus

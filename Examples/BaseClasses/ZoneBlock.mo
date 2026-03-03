@@ -69,8 +69,9 @@ block ZoneBlock
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     k=0.05,
     Ti=300,
+    yMin=0.001,
     initType=Modelica.Blocks.Types.Init.InitialOutput,
-    y_start=0,
+    y_start=0.001,
     reverseActing=true)
     annotation (Placement(transformation(extent={{-198,-40},{-178,-20}})));
   Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temperatureSensor
@@ -81,8 +82,9 @@ block ZoneBlock
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     k=0.05,
     Ti=300,
+    yMin=0.001,
     initType=Modelica.Blocks.Types.Init.InitialOutput,
-    y_start=0,
+    y_start=0.001,
     reverseActing=false)
     annotation (Placement(transformation(extent={{-198,-96},{-178,-76}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con(k=
@@ -91,7 +93,7 @@ block ZoneBlock
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con1(k=
         CoolingAmbientTemperature)                                        annotation(
     Placement(transformation(origin={-236,-90},  extent = {{-10, -10}, {10, 10}})));
-  Buildings.Fluid.HeatExchangers.WetCoilCounterFlow cooCoi(
+  Buildings.Fluid.HeatExchangers.DryCoilCounterFlow heaCoi(
     redeclare package Medium1 = MediumWater,
     redeclare package Medium2 = MediumAir,
     m1_flow_nominal=mHxWater_flow_nominal,
@@ -217,7 +219,7 @@ block ZoneBlock
         extent={{-20,-20},{20,20}},
         rotation=0,
         origin={380,-26})));
-  Modelica.Blocks.Sources.RealExpression realExpression(y=cooCoi.Q2_flow)
+  Modelica.Blocks.Sources.RealExpression realExpression(y=heaCoi.Q2_flow)
     annotation (Placement(transformation(extent={{218,76},{238,96}})));
 equation
   connect(zonLoaReq, zoneThermalMode.ZonLoaReq)
@@ -271,21 +273,21 @@ equation
   connect(temperatureSensor1.T, valueScaleDownCoo.u) annotation (Line(points={{-53.3,
           -69},{-53.3,-70},{-90,-70},{-90,-160},{-38,-160},{-38,-164},{-28,-164}},
         color={0,0,127}));
-  connect(bou1.ports[1], cooCoi.port_a2) annotation (Line(points={{258,-44},{
+  connect(bou1.ports[1],heaCoi. port_a2) annotation (Line(points={{258,-44},{
           242,-44},{242,-73.3769},{236.108,-73.3769}},
                                                    color={0,127,255}));
   connect(junConv.port_2, senTemAirIn.port_a) annotation (Line(points={{86,2},{
           104,2},{104,-6},{116,-6}}, color={0,127,255}));
-  connect(senTemAirIn.port_b, cooCoi.port_a2) annotation (Line(points={{136,-6},
+  connect(senTemAirIn.port_b,heaCoi. port_a2) annotation (Line(points={{136,-6},
           {242,-6},{242,-73.3769},{236.108,-73.3769}}, color={0,127,255}));
-  connect(cooCoi.port_b2, senTemAirOut.port_a) annotation (Line(points={{
-          209.622,-73.3769},{188,-73.3769},{188,-72},{182,-72}}, color={0,127,
+  connect(heaCoi.port_b2, senTemAirOut.port_a) annotation (Line(points={{209.622,
+          -73.3769},{188,-73.3769},{188,-72},{182,-72}},         color={0,127,
           255}));
-  connect(cooCoi.port_b1, senTemWaterOut.port_a) annotation (Line(points={{236.108,
+  connect(heaCoi.port_b1, senTemWaterOut.port_a) annotation (Line(points={{236.108,
           -96.6635},{252,-96.6635},{252,-116}}, color={0,127,255}));
   connect(senTemWaterOut.port_b, movWater.port_a) annotation (Line(points={{252,
           -136},{252,-152},{258,-152}}, color={0,127,255}));
-  connect(cooCoi.port_a1, senTemWaterIn.port_b) annotation (Line(points={{209.622,
+  connect(heaCoi.port_a1, senTemWaterIn.port_b) annotation (Line(points={{209.622,
           -96.6635},{190,-96.6635},{190,-126},{184,-126}}, color={0,127,255}));
   connect(senTemWaterIn.port_a, port_a) annotation (Line(points={{164,-126},{122,
           -126},{122,-192},{-104,-192},{-104,-176}}, color={0,127,255}));
