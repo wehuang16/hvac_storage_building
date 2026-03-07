@@ -1,7 +1,7 @@
 within hvac_storage_building.Examples.BaseClasses;
 model HvacWaterStorage2
 
-  parameter Integer numZon=3 "number of zones";
+  parameter Integer numZon=6 "number of zones";
   parameter Integer nSeg=20 "number of tank segments";
   parameter Real heatLossRateTank=5 "heat loss rate in W/K";
   parameter Real heatLossRateVolumizer=0.5 "heat loss rate in W/K";
@@ -52,8 +52,7 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
     dIns=0.02,
     nSeg=nSeg,
     redeclare package Medium = MediumWater,
-    T_start=(HeatingTankFullTemperature + HeatingTankEmptyTemperature)/2)
-                    annotation (Placement(transformation(origin={-20,8}, extent
+    T_start=303.65) annotation (Placement(transformation(origin={-20,8}, extent
           ={{-10,-10},{10,10}})));
   Buildings.Fluid.Movers.FlowControlled_m_flow mov(redeclare package Medium = MediumWater, m_flow_nominal = mSystemWater_flow_nominal, addPowerToMedium = false)  annotation(
     Placement(transformation(origin = {-86, 76}, extent = {{-10, -10}, {10, 10}})));
@@ -72,8 +71,7 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
     hTan=1.5,
     m_flow_nominal=mSystemWater_flow_nominal,
     nSeg=nSeg,
-    T_start=(CoolingTankFullTemperature + CoolingTankEmptyTemperature)/2)
-                    annotation (Placement(transformation(origin={-58,13},
+    T_start=288.85) annotation (Placement(transformation(origin={-58,13},
           extent={{-10,-10},{10,10}})));
   Controls.hvac_storage_controller hvac_storage_controller
     annotation (Placement(transformation(extent={{-178,142},{-158,162}})));
@@ -99,7 +97,7 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
   Buildings.Fluid.MixingVolumes.MixingVolume volumizer(
     redeclare package Medium = MediumWater,
     m_flow_nominal=mSystemWater_flow_nominal,
-    V=0.05,
+    V=0.2,
     nPorts=2*numZon+2) annotation (Placement(transformation(extent={{52,88},{72,108}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput outside_air_temperature
     annotation (Placement(transformation(extent={{-380,-20},{-340,20}}),
@@ -177,6 +175,12 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-48,50})));
+  TankSOC tankSOCHot(TankFullTemperature=HeatingTankFullTemperature,
+      TankEmptyTemperature=HeatingTankEmptyTemperature)
+    annotation (Placement(transformation(extent={{-286,228},{-266,248}})));
+  TankSOC tankSOCCold(TankFullTemperature=CoolingTankFullTemperature,
+      TankEmptyTemperature=CoolingTankEmptyTemperature)
+    annotation (Placement(transformation(extent={{-286,108},{-266,128}})));
 equation
   connect(heaPumPer.MaxHeaPumCapHea, simple_heat_pump_2d.MaxHeaPumCapHea) annotation(
     Line(points={{-176,39.2},{-166,39.2},{-166,45.3},{-157.1,45.3}},        color = {0, 0, 127}));
@@ -321,6 +325,12 @@ equation
   connect(hvac_storage_controller.HotTesValve, gai2.u) annotation (Line(points=
           {{-156,162.6},{-66,162.6},{-66,58},{-68,58},{-68,50},{-60,50}}, color
         ={0,0,127}));
+  connect(tankAverageTemperatureHot.avgTem, tankSOCHot.TTan) annotation (Line(
+        points={{-296,200},{-288,200},{-288,222},{-296,222},{-296,238},{-288.2,
+          238}}, color={0,0,127}));
+  connect(tankAverageTemperatureCold.avgTem, tankSOCCold.TTan) annotation (Line(
+        points={{-294,150},{-294,126},{-296,126},{-296,118},{-288.2,118}},
+        color={0,0,127}));
   annotation(
     experiment(StartTime = 0, StopTime = 432000, Tolerance = 1e-06, Interval = 60),
     __OpenModelica_commandLineOptions = "--matchingAlgorithm=PFPlusExt --indexReductionMethod=dynamicStateSelection -d=initialization,NLSanalyticJacobian",
