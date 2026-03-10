@@ -28,6 +28,16 @@ block UnservedLoadCalculation
         extent={{-20,-20},{20,20}},
         rotation=0,
         origin={120,0})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput ZonLoaUnsHea
+    "unserved zone load" annotation (Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=0,
+        origin={118,56})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput ZonLoaUnsCoo
+    "unserved zone load" annotation (Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=0,
+        origin={118,-94})));
 equation
   connect(ZonLoaReq, separateHeatingCoolingThermalEnergy.EffectiveThermalEnergy)
     annotation (Line(points={{-120,60},{-58,60}}, color={0,0,127}));
@@ -60,6 +70,10 @@ equation
           {92,-66}}, color={0,0,127}));
   connect(sub2.y, ZonLoaUns) annotation (Line(points={{116,-60},{124,-60},{124,
           -24},{96,-24},{96,0},{120,0}}, color={0,0,127}));
+  connect(max1.y, ZonLoaUnsHea) annotation (Line(points={{66,32},{92,32},{92,56},
+          {118,56}}, color={0,0,127}));
+  connect(max2.y, ZonLoaUnsCoo) annotation (Line(points={{76,-58},{84,-58},{84,
+          -94},{118,-94}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end UnservedLoadCalculation;

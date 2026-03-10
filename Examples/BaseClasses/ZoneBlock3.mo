@@ -1,5 +1,5 @@
 within hvac_storage_building.Examples.BaseClasses;
-block ZoneBlock2
+block ZoneBlock3
 
   parameter Real ZoneAirVolume=1000 "m3";
   parameter Real HeatingAmbientTemperature=273.15+26 "K";
@@ -53,24 +53,16 @@ block ZoneBlock2
     reverseActing=true,
     reset=Buildings.Types.Reset.Parameter)
     annotation (Placement(transformation(extent={{-14,-102},{6,-82}})));
-  Buildings.Fluid.HeatExchangers.WetCoilCounterFlow cooCoi(
+  VariableEffectiveness                             hex(
     redeclare package Medium1 = MediumWater,
     redeclare package Medium2 = MediumAir,
     m1_flow_nominal=mHxWater_flow_nominal,
     m2_flow_nominal=mHxAir_flow_nominal,
     dp1_nominal=dpHxWater_nominal,
-    dp2_nominal=dpHxAir_nominal,
-    UA_nominal=UA_nominal)
+    dp2_nominal=dpHxAir_nominal)
                     annotation (Placement(transformation(
         origin={222.865,-85.0202},
         extent={{13.2434,-19.4055},{-13.2434,19.4055}},
-        rotation=180)));
-  Buildings.Fluid.Movers.FlowControlled_m_flow movAir(
-    redeclare package Medium = MediumAir,
-    addPowerToMedium=false,
-    m_flow_nominal=mHxAir_flow_nominal) annotation (Placement(transformation(
-        origin={181,-73},
-        extent={{-10,-10},{10,10}},
         rotation=180)));
   Buildings.Fluid.Movers.FlowControlled_m_flow movWater(
     redeclare package Medium = MediumWater,
@@ -89,10 +81,12 @@ block ZoneBlock2
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=90,
         origin={194,-242})));
-  Buildings.Fluid.Sources.Boundary_pT bou1(redeclare package Medium = MediumAir,
+  Buildings.Fluid.Sources.MassFlowSource_T movAir(
+    redeclare package Medium = MediumAir,
+    use_m_flow_in=true,
     use_T_in=true,
-    nPorts=1)
-    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+    nPorts=1) annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
         rotation=180,
         origin={378,-58})));
   Buildings.Fluid.Sensors.TemperatureTwoPort senTemAirIn(redeclare package
@@ -144,7 +138,7 @@ block ZoneBlock2
         extent={{-20,-20},{20,20}},
         rotation=0,
         origin={380,-26})));
-  Modelica.Blocks.Sources.RealExpression realExpression(y=cooCoi.Q2_flow)
+  Modelica.Blocks.Sources.RealExpression realExpression(y=hex.Q2_flow)
     annotation (Placement(transformation(extent={{-128,-62},{-108,-42}})));
   Buildings.Fluid.Sources.Boundary_pT bou2(redeclare package Medium = MediumAir,
       nPorts=1)
@@ -182,6 +176,18 @@ block ZoneBlock2
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={118,-244})));
+  Modelica.Blocks.Tables.CombiTable2Ds HeatingPerformance(table=[0.0,273.15 +
+        10,273.15 + 15,273.15 + 20,273.15 + 25; 273.15 + 35,0.481,0.466,0.441,
+        0.5; 273.15 + 45,0.456,0.441,0.42,0.5; 273.15 + 55,0.475,0.467,0.456,
+        0.441; 273.15 + 75,0.494,0.491,0.486,0.481], extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
+    annotation (Placement(transformation(extent={{154,-30},{174,-10}})));
+  Modelica.Blocks.Tables.CombiTable2Ds CoolingPerformance(table=[0.0,273.15 +
+        20,273.15 + 27,273.15 + 35; 273.15 + 7,0.385,0.403,0.579; 273.15 + 16,
+        0.5,0.311,0.497; 273.15 + 18.3,0.529,0.325,0.469], extrapolation=
+        Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
+    annotation (Placement(transformation(extent={{156,-66},{176,-46}})));
+  Modelica.Blocks.Logical.Switch switch3
+    annotation (Placement(transformation(extent={{206,-50},{226,-30}})));
 equation
   connect(zonLoaReq, zoneThermalMode.ZonLoaReq)
     annotation (Line(points={{-120,72},{-58,72}}, color={0,0,127}));
@@ -191,14 +197,16 @@ equation
           {302,-130},{268,-130},{268,-140}}, color={0,0,127}));
   connect(zonLoaReq, separateHeatingCoolingThermalEnergyReq.EffectiveThermalEnergy)
     annotation (Line(points={{-120,72},{-120,-20},{-88,-20}}, color={0,0,127}));
-  connect(senTemAirIn.port_b,cooCoi. port_a2) annotation (Line(points={{288,-46},
-          {242,-46},{242,-73.3769},{236.108,-73.3769}},color={0,127,255}));
-  connect(cooCoi.port_b1, senTemWaterOut.port_a) annotation (Line(points={{236.108,
+  connect(senTemAirIn.port_b, hex.port_a2) annotation (Line(points={{288,-46},{
+          242,-46},{242,-73.3769},{236.108,-73.3769}},
+                                                   color={0,127,255}));
+  connect(hex.port_b1, senTemWaterOut.port_a) annotation (Line(points={{236.108,
           -96.6635},{252,-96.6635},{252,-116}}, color={0,127,255}));
   connect(senTemWaterOut.port_b, movWater.port_a) annotation (Line(points={{252,
           -136},{252,-152},{258,-152}}, color={0,127,255}));
-  connect(cooCoi.port_a1, senTemWaterIn.port_b) annotation (Line(points={{209.622,
-          -96.6635},{190,-96.6635},{190,-126},{184,-126}}, color={0,127,255}));
+  connect(hex.port_a1, senTemWaterIn.port_b) annotation (Line(points={{209.622,
+          -96.6635},{190,-96.6635},{190,-126},{184,-126}},
+                                                 color={0,127,255}));
   connect(senTemWaterIn.port_a, port_a) annotation (Line(points={{164,-126},{122,
           -126},{122,-192},{-104,-192},{-104,-176}}, color={0,127,255}));
   connect(zoneThermalMode.yZonHeaCooMod, intToRea.u) annotation (Line(points={{-34,72},
@@ -219,8 +227,6 @@ equation
           {270,160}}, color={255,0,255}));
   connect(not1.y, and2.u2)
     annotation (Line(points={{252,54},{270,54},{270,152}}, color={255,0,255}));
-  connect(movAir.m_flow_in, gai1.y) annotation (Line(points={{181,-85},{181,
-          -108},{194,-108},{194,-230}}, color={0,0,127}));
   connect(hys.y, not2.u) annotation (Line(points={{162,70},{262,70},{262,46},{
           260,46},{260,38},{268,38}}, color={255,0,255}));
   connect(not1.y, and1.u2) annotation (Line(points={{252,54},{250,54},{250,12},
@@ -233,12 +239,8 @@ equation
   connect(realExpression.y, zonLoaAct) annotation (Line(points={{-107,-52},{58,
           -52},{58,0},{408,0},{408,76},{380,76}},
                                   color={0,0,127}));
-  connect(bou1.ports[1], senTemAirIn.port_a) annotation (Line(points={{368,-58},
+  connect(movAir.ports[1], senTemAirIn.port_a) annotation (Line(points={{368,-58},
           {314,-58},{314,-46},{308,-46}}, color={0,127,255}));
-  connect(cooCoi.port_b2, movAir.port_a) annotation (Line(points={{209.622,
-          -73.3769},{208,-73},{191,-73}}, color={0,127,255}));
-  connect(movAir.port_b, senTemAirOut.port_a) annotation (Line(points={{171,-73},
-          {172,-74},{152,-74}}, color={0,127,255}));
   connect(senTemAirOut.port_b, bou2.ports[1])
     annotation (Line(points={{132,-74},{112,-74}}, color={0,127,255}));
   connect(realExpression.y, separateHeatingCoolingThermalEnergyAct.EffectiveThermalEnergy)
@@ -278,17 +280,47 @@ equation
           -252},{106,-252}}, color={0,0,127}));
   connect(notValidCooling.y, swi.u2) annotation (Line(points={{510,32},{522,32},
           {522,-286},{78,-286},{78,-244},{106,-244}}, color={255,0,255}));
-  connect(swi.y, gai1.u) annotation (Line(points={{130,-244},{172,-244},{172,
-          -268},{194,-268},{194,-254}}, color={0,0,127}));
-  connect(booToRea.y, bou1.T_in) annotation (Line(points={{404,-90},{404,-92},{
-          392,-92},{392,-76},{400,-76},{400,-62},{390,-62}}, color={0,0,127}));
+  connect(booToRea.y, movAir.T_in) annotation (Line(points={{404,-90},{404,-92},
+          {392,-92},{392,-76},{400,-76},{400,-62},{390,-62}}, color={0,0,127}));
   connect(swiHea.u2, conPIDHea.trigger) annotation (Line(points={{36,-88},{16,
           -88},{16,-76},{-24,-76},{-24,-112},{-12,-112},{-12,-104}}, color={255,
           0,255}));
   connect(swiCoo.u2, conPIDCoo.trigger) annotation (Line(points={{32,-156},{28,
           -156},{28,-184},{-22,-184},{-22,-166}}, color={255,0,255}));
+  connect(hex.port_b2, senTemAirOut.port_a) annotation (Line(points={{209.622,
+          -73.3769},{160,-73.3769},{160,-74},{152,-74}}, color={0,127,255}));
+  connect(gai1.y, movAir.m_flow_in) annotation (Line(points={{194,-230},{196,
+          -230},{196,-180},{384,-180},{384,-76},{390,-76},{390,-66}}, color={0,
+          0,127}));
+  connect(swi.y, gai1.u) annotation (Line(points={{130,-244},{160,-244},{160,
+          -256},{194,-256},{194,-254}}, color={0,0,127}));
+  connect(HeatingPerformance.y, switch3.u1) annotation (Line(points={{175,-20},
+          {196,-20},{196,-32},{204,-32}}, color={0,0,127}));
+  connect(CoolingPerformance.y, switch3.u3) annotation (Line(points={{177,-56},
+          {192,-56},{192,-48},{204,-48}}, color={0,0,127}));
+  connect(notValidCooling.y, switch3.u2) annotation (Line(points={{510,32},{528,
+          32},{528,-20},{186,-20},{186,-40},{204,-40}}, color={255,0,255}));
+  connect(switch3.y, hex.eps) annotation (Line(points={{227,-40},{236,-40},{236,
+          -24},{184,-24},{184,-87.1548},{206.973,-87.1548}}, color={0,0,127}));
+  connect(senTemWaterIn.T, CoolingPerformance.u1) annotation (Line(points={{174,
+          -115},{132,-115},{132,-114},{86,-114},{86,-50},{154,-50}}, color={0,0,
+          127}));
+  connect(senTemWaterIn.T, HeatingPerformance.u1) annotation (Line(points={{174,
+          -115},{124,-115},{124,-110},{88,-110},{88,-14},{152,-14}}, color={0,0,
+          127}));
+  connect(senTemAirIn.T, CoolingPerformance.u2) annotation (Line(points={{298,
+          -57},{298,-64},{268,-64},{268,-8},{180,-8},{180,-4},{144,-4},{144,-40},
+          {154,-40},{154,-62}}, color={0,0,127}));
+  connect(senTemAirIn.T, HeatingPerformance.u2) annotation (Line(points={{298,
+          -57},{298,-64},{268,-64},{268,-8},{180,-8},{180,-4},{144,-4},{144,-26},
+          {152,-26}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -180},{360,100}})),                                  Diagram(
         coordinateSystem(preserveAspectRatio=false, extent={{-100,-180},{360,
-            100}})));
-end ZoneBlock2;
+            100}})),
+    experiment(
+      StartTime=18230400,
+      StopTime=18403200,
+      Interval=60,
+      __Dymola_Algorithm="Dassl"));
+end ZoneBlock3;

@@ -3,7 +3,7 @@ model HvacWaterStorageExample
   BaseClasses.HvacWaterStorage2 hvacWaterStorage
     annotation (Placement(transformation(extent={{2,-4},{42,16}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable dailyScheduleTable(
-    table=[0,1; 2,1; 4,1; 6,2; 10,3; 16,4; 21,1; 24,1],
+    table=[0,1; 2,1; 4,1; 6,3; 10,3; 16,4; 21,1; 24,1],
     timeScale=3600,
     period=86400)                                                                                                                                                           annotation(
     Placement(transformation(origin={-60,74},      extent = {{-10, -10}, {10, 10}})));
@@ -34,9 +34,6 @@ model HvacWaterStorageExample
   Buildings.Controls.OBC.UnitConversions.From_degC from_degC
     annotation (Placement(transformation(extent={{-40,-4},{-20,16}})));
 equation
-  connect(dailyScheduleTableAlternative.y[1], hvacWaterStorage.systemCommand)
-    annotation (Line(points={{-36,34},{-6,34},{-6,12.2},{0.518519,12.2}}, color
-        ={255,127,0}));
   connect(combiTimeTable.y[1], from_degC.u) annotation (Line(points={{-91,22},{
           -62,22},{-62,6},{-42,6}}, color={0,0,127}));
   connect(from_degC.y, hvacWaterStorage.outside_air_temperature)
@@ -44,6 +41,9 @@ equation
   connect(combiTimeTable.y[2:7], hvacWaterStorage.ZonLoaReq) annotation (Line(
         points={{-91,22},{-62,22},{-62,6},{-50,6},{-50,-10},{-6,-10},{-6,-1},{
           0.518519,-1}}, color={0,0,127}));
+  connect(dailyScheduleTable.y[1], hvacWaterStorage.systemCommand) annotation (
+      Line(points={{-48,74},{-6,74},{-6,12.2},{0.518519,12.2}}, color={255,127,
+          0}));
   annotation (
     Icon(coordinateSystem(preserveAspectRatio=false)),
     Diagram(coordinateSystem(preserveAspectRatio=false)),
@@ -51,5 +51,5 @@ equation
       StartTime=18230400,
       StopTime=18403200,
       Interval=60,
-      __Dymola_Algorithm="Dassl"));
+      __Dymola_Algorithm="Cvode"));
 end HvacWaterStorageExample;

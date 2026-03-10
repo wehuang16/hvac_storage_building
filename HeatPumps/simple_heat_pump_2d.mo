@@ -104,6 +104,16 @@ model simple_heat_pump_2d
   BaseClasses.heat_pump_cycling_timer_controller heat_pump_cycling_controller_cooling(
       cycling_wait_time=cycling_wait_time)
     annotation (Placement(transformation(extent={{36,98},{56,118}})));
+  Buildings.Controls.OBC.CDL.Reals.Switch swi2  annotation (
+    Placement(transformation(origin={311,-164},  extent = {{-80, 148}, {-60, 168}})));
+  Modelica.Blocks.Interfaces.RealOutput COP annotation (Placement(
+        transformation(
+        origin={214,210},
+        extent={{-12,-12},{12,12}},
+        rotation=90), iconTransformation(
+        origin={151,211},
+        extent={{-11,-11},{11,11}},
+        rotation=90)));
 equation
   connect(TWatSup.port_b, port_b) annotation (
     Line(points = {{76, 56}, {302, 56}}, color = {0, 127, 255}));
@@ -225,6 +235,14 @@ equation
         ={255,0,255}));
   connect(and1.y, conPID1.trigger) annotation (Line(points={{14,-164},{22,-164},
           {22,-116},{54,-116},{54,-98}}, color={255,0,255}));
+  connect(HeaPumMod, swi2.u2) annotation (Line(points={{310,14},{220,14},{220,
+          -6},{229,-6}}, color={255,0,255}));
+  connect(COPHea, swi2.u1) annotation (Line(points={{-112,-20},{-112,-14},{-84,
+          -14},{-84,6},{-76,6},{-76,8},{222,8},{222,2},{229,2}}, color={0,0,127}));
+  connect(COPCoo, swi2.u3) annotation (Line(points={{-112,-54},{-94,-54},{-94,
+          12},{152,12},{152,-14},{229,-14}}, color={0,0,127}));
+  connect(swi2.y, COP) annotation (Line(points={{253,-6},{260,-6},{260,210},{
+          214,210}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -200},{300,200}})),                                  Diagram(
         coordinateSystem(preserveAspectRatio=false, extent={{-100,-200},{300,

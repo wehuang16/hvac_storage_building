@@ -5,6 +5,7 @@ SystemThermalMode
 ZoneThermalMode
 ZoneBlock
 ZoneBlock2
+ZoneBlock3
 ValueScaleDown
 SeparateHeatingCoolingThermalEnergy
 HeatingThermalStorageStatus
@@ -13,3 +14,6 @@ UnservedLoadCalculation
 HvacWaterStorage
 HvacWaterStorage2
 TankSOC
+VariableEffectiveness
+FmuPatch
+realSwitch
