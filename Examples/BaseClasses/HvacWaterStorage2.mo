@@ -37,8 +37,8 @@ model HvacWaterStorage2
       Buildings.Media.Antifreeze.PropyleneGlycolWater (property_T=273.15+20, X_a=
             0.4);
    parameter Modelica.Units.SI.MassFlowRate mSystemWater_flow_nominal=0.575 "Nominal mass flow rate on the water side";
-    parameter Modelica.Units.SI.MassFlowRate mHxWater_flow_nominal=0.11827 "Nominal mass flow rate on the water side";
-    parameter Modelica.Units.SI.MassFlowRate mHxAir_flow_nominal=0.14951 "Nominal mass flow rate on the air side";
+    parameter Modelica.Units.SI.MassFlowRate mHxWater_flow_nominal=0.11827*4 "Nominal mass flow rate on the water side";
+    parameter Modelica.Units.SI.MassFlowRate mHxAir_flow_nominal=0.14951*4 "Nominal mass flow rate on the air side";
 
 
 
