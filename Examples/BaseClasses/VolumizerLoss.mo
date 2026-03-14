@@ -12,12 +12,12 @@ block VolumizerLoss
   Buildings.HeatTransfer.Sources.PrescribedTemperature TA
     "Temperature boundary condition"
     annotation (Placement(transformation(extent={{-28,-8},{-8,12}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput outside_air_temperature
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput inside_air_temperature
     annotation (Placement(transformation(extent={{-140,-20},{-100,20}})));
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a port_a
     annotation (Placement(transformation(extent={{96,-10},{116,10}})));
 equation
-  connect(outside_air_temperature, TA.T) annotation (Line(points={{-120,0},{-38,
+  connect(inside_air_temperature, TA.T) annotation (Line(points={{-120,0},{-38,
           0},{-38,2},{-30,2}}, color={0,0,127}));
   connect(TA.port, con1.fluid)
     annotation (Line(points={{-8,2},{22,2}}, color={191,0,0}));

@@ -2,10 +2,9 @@ within hvac_storage_building.Examples.BaseClasses;
 block ZoneBlock3
 
   parameter Real ZoneAirVolume=1000 "m3";
-  parameter Real HeatingAmbientTemperature=273.15+26 "K";
-  parameter Real CoolingAmbientTemperature=273.15+18 "K";
-  parameter Real HeatingScaleDownTemperature=273.15+22 "K";
-  parameter Real CoolingScaleDownTemperature=273.15+22 "K";
+  parameter Real HeatingAmbientTemperature=273.15+22 "K";
+  parameter Real CoolingAmbientTemperature=273.15+22 "K";
+
 
 
     parameter Modelica.Units.SI.MassFlowRate mHxWater_flow_nominal=0.15 "Nominal mass flow rate on the water side";

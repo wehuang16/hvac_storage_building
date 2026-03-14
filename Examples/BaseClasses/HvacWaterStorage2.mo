@@ -3,21 +3,20 @@ model HvacWaterStorage2
 
   parameter Integer numZon=6 "number of zones";
   parameter Integer nSeg=20 "number of tank segments";
-  parameter Real heatLossRateTank=5 "heat loss rate in W/K";
+  parameter Real heatLossRateTank=30 "heat loss rate in W/K";
   parameter Real heatLossRateVolumizer=0.5 "heat loss rate in W/K";
 
     parameter Real ZoneAirVolume=1000 "m3";
     parameter Real volumizerVolume=0.1 "m3";
-    parameter Real heatPumpCyclingWaitTime=900 "s";
-  parameter Real HeatingAmbientTemperature=273.15+26 "K";
-  parameter Real CoolingAmbientTemperature=273.15+18 "K";
-  parameter Real HeatingScaleDownTemperature=273.15+22 "K";
-  parameter Real CoolingScaleDownTemperature=273.15+22 "K";
+    parameter Real heatPumpCyclingWaitTime=600 "s";
+  parameter Real HeatingAmbientTemperature=273.15+22 "K";
+  parameter Real CoolingAmbientTemperature=273.15+22 "K";
+parameter Real InsideAirTemperature=273.15+22 "K";
 
-    parameter Real HeatingTankFullTemperature=273.15+53 "K";
-  parameter Real HeatingTankEmptyTemperature=273.15+28 "K";
-  parameter Real CoolingTankFullTemperature=273.15+10 "K";
-  parameter Real CoolingTankEmptyTemperature=273.15+16 "K";
+    parameter Real HeatingTankFullTemperature=273.15+54 "K";
+  parameter Real HeatingTankEmptyTemperature=273.15+38 "K";
+  parameter Real CoolingTankFullTemperature=273.15+8 "K";
+  parameter Real CoolingTankEmptyTemperature=273.15+14 "K";
 
   HeatPumps.simple_heat_pump_2d simple_heat_pump_2d(redeclare package
       Medium_con = MediumWater, mCon_flow_nominal=mSystemWater_flow_nominal,
@@ -56,7 +55,7 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
     dIns=0.02,
     nSeg=nSeg,
     redeclare package Medium = MediumWater,
-    T_start=303.65) annotation (Placement(transformation(origin={-20,8}, extent
+    T_start=311.95) annotation (Placement(transformation(origin={-20,8}, extent
           ={{-10,-10},{10,10}})));
   Buildings.Fluid.Movers.FlowControlled_m_flow mov(redeclare package Medium = MediumWater, m_flow_nominal = mSystemWater_flow_nominal, addPowerToMedium = false)  annotation(
     Placement(transformation(origin = {-86, 76}, extent = {{-10, -10}, {10, 10}})));
@@ -75,7 +74,7 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
     hTan=1.5,
     m_flow_nominal=mSystemWater_flow_nominal,
     nSeg=nSeg,
-    T_start=288.85) annotation (Placement(transformation(origin={-58,13},
+    T_start=286.85) annotation (Placement(transformation(origin={-58,13},
           extent={{-10,-10},{10,10}})));
   Controls.hvac_storage_controller hvac_storage_controller
     annotation (Placement(transformation(extent={{-178,142},{-158,162}})));
@@ -123,8 +122,6 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
     ZoneAirVolume=ZoneAirVolume,
     HeatingAmbientTemperature=HeatingAmbientTemperature,
     CoolingAmbientTemperature=CoolingAmbientTemperature,
-    HeatingScaleDownTemperature=HeatingScaleDownTemperature,
-    CoolingScaleDownTemperature=CoolingScaleDownTemperature,
     mHxWater_flow_nominal=mHxWater_flow_nominal,
     mHxAir_flow_nominal=mHxAir_flow_nominal,
     dpHxWater_nominal=dpHxWater_nominal,
@@ -203,6 +200,9 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
     annotation (Placement(transformation(extent={{184,-106},{196,-94}})));
   FmuPatch fmuPatch
     annotation (Placement(transformation(extent={{-450,-136},{-430,-116}})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant inside_air_temperature(k=
+        InsideAirTemperature) annotation (Placement(transformation(origin={-252,
+            -80}, extent={{-10,-10},{10,10}})));
 equation
   connect(heaPumPer_LG.MaxHeaPumCapHea, simple_heat_pump_2d.MaxHeaPumCapHea)
     annotation (Line(points={{-176,39.2},{-166,39.2},{-166,45.3},{-157.1,45.3}},
@@ -273,19 +273,10 @@ equation
   connect(tankLossHot.port_a, tanHot.heaPorVol) annotation (Line(points={{-69.4,
           -136},{-64,-136},{-64,-44},{-32,-44},{-32,-24},{-30,-24},{-30,-20},{-34,
           -20},{-34,-8},{-36,-8},{-36,8},{-20,8}}, color={191,0,0}));
-  connect(outside_air_temperature, tankLossCold.outside_air_temperature)
-    annotation (Line(points={{-360,0},{-278,0},{-278,-104},{-146,-104}},
-        color={0,0,127}));
-  connect(outside_air_temperature, tankLossHot.outside_air_temperature)
-    annotation (Line(points={{-360,0},{-278,0},{-278,-104},{-154,-104},{-154,-136},
-          {-92,-136}}, color={0,0,127}));
   connect(volumizer.ports[2], jun1.port_1) annotation (Line(points={{62,88},{56,
           88},{56,-80},{-11,-80},{-11,-64}}, color={0,127,255}));
   connect(volumizerLoss.port_a, volumizer.heatPort) annotation (Line(points={{18.6,
           180},{46,180},{46,98},{52,98}}, color={191,0,0}));
-  connect(outside_air_temperature, volumizerLoss.outside_air_temperature)
-    annotation (Line(points={{-360,0},{-278,0},{-278,18},{-224,18},{-224,152},{-188,
-          152},{-188,180},{-4,180}},                         color={0,0,127}));
   connect(ZonLoaReq, zoneThermalMode.ZonLoaReq) annotation (Line(points={{-360,-90},
           {-280,-90},{-280,-154},{98,-154},{98,-102}},
                                            color={0,0,127}));
@@ -366,6 +357,15 @@ equation
         color={0,0,127}));
   connect(multiSum1.y, ZonLoaUnsCooSum) annotation (Line(points={{197.02,-100},
           {238,-100},{238,-102},{264,-102}}, color={0,0,127}));
+  connect(inside_air_temperature.y, tankLossCold.inside_air_temperature)
+    annotation (Line(points={{-240,-80},{-166,-80},{-166,-104},{-146,-104}},
+        color={0,0,127}));
+  connect(inside_air_temperature.y, tankLossHot.inside_air_temperature)
+    annotation (Line(points={{-240,-80},{-140,-80},{-140,-136},{-92,-136}},
+        color={0,0,127}));
+  connect(inside_air_temperature.y, volumizerLoss.inside_air_temperature)
+    annotation (Line(points={{-240,-80},{-96,-80},{-96,180},{-4,180}}, color={0,
+          0,127}));
   annotation(
     experiment(StartTime = 0, StopTime = 432000, Tolerance = 1e-06, Interval = 60),
     __OpenModelica_commandLineOptions = "--matchingAlgorithm=PFPlusExt --indexReductionMethod=dynamicStateSelection -d=initialization,NLSanalyticJacobian",

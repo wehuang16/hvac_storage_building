@@ -265,19 +265,19 @@ equation
   connect(tankLossHot.port_a, tanHot.heaPorVol) annotation (Line(points={{-69.4,
           -136},{-64,-136},{-64,-44},{-32,-44},{-32,-24},{-30,-24},{-30,-20},{-34,
           -20},{-34,-8},{-36,-8},{-36,8},{-20,8}}, color={191,0,0}));
-  connect(outside_air_temperature, tankLossCold.outside_air_temperature)
-    annotation (Line(points={{-360,0},{-278,0},{-278,-104},{-146,-104}},
-        color={0,0,127}));
-  connect(outside_air_temperature, tankLossHot.outside_air_temperature)
+  connect(outside_air_temperature, tankLossCold.inside_air_temperature)
+    annotation (Line(points={{-360,0},{-278,0},{-278,-104},{-146,-104}}, color=
+          {0,0,127}));
+  connect(outside_air_temperature, tankLossHot.inside_air_temperature)
     annotation (Line(points={{-360,0},{-278,0},{-278,-104},{-154,-104},{-154,-136},
           {-92,-136}}, color={0,0,127}));
   connect(volumizer.ports[2], jun1.port_1) annotation (Line(points={{62,88},{56,
           88},{56,-80},{-11,-80},{-11,-64}}, color={0,127,255}));
   connect(volumizerLoss.port_a, volumizer.heatPort) annotation (Line(points={{18.6,
           180},{46,180},{46,98},{52,98}}, color={191,0,0}));
-  connect(outside_air_temperature, volumizerLoss.outside_air_temperature)
-    annotation (Line(points={{-360,0},{-278,0},{-278,18},{-224,18},{-224,152},{-188,
-          152},{-188,180},{-4,180}},                         color={0,0,127}));
+  connect(outside_air_temperature, volumizerLoss.inside_air_temperature)
+    annotation (Line(points={{-360,0},{-278,0},{-278,18},{-224,18},{-224,152},{
+          -188,152},{-188,180},{-4,180}}, color={0,0,127}));
   connect(ZonLoaReq, zoneThermalMode.ZonLoaReq) annotation (Line(points={{-360,-90},
           {-280,-90},{-280,-154},{98,-154},{98,-102}},
                                            color={0,0,127}));

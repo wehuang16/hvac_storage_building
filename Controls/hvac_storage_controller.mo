@@ -8,8 +8,8 @@ model hvac_storage_controller
   Modelica.Blocks.Tables.CombiTable1Ds equipmentControl(table=[0,0,0,0,0,273.15
          + 20,1,0; 1,0,0,1,1,273.15 + 48,1,1; 2,-1,0,1,0,273.15 + 55,1,1; 3,1,0,
         0,1,273.15 + 48,1,0; 4,-0.5,0,1,0.5,273.15 + 55,1,1; 5,0,1,1,1,273.15
-         + 11,0,1; 6,0,1,1,0,273.15 + 8,0,1; 7,0,1,0,1,273.15 + 11,0,0; 8,0,1,1,
-        0.5,273.15 + 8,0,1],                               extrapolation=
+         + 11,0,1; 6,0,1,1,0,273.15 + 7,0,1; 7,0,1,0,1,273.15 + 11,0,0; 8,0,1,1,
+        0.5,273.15 + 7,0,1],                               extrapolation=
         Modelica.Blocks.Types.Extrapolation.NoExtrapolation)
     annotation (Placement(transformation(extent={{46,20},{66,40}})));
   Buildings.Controls.OBC.CDL.Conversions.IntegerToReal intToRea
