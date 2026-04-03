@@ -1,5 +1,7 @@
 within hvac_storage_building.HeatPumps.BaseClasses;
 model HeaPumPer_LG
+
+  parameter Real scaFac=1 "scaling factor";
   Buildings.Controls.OBC.CDL.Interfaces.RealInput TSup annotation(
     Placement(transformation(origin = {-120, 60}, extent = {{-20, -20}, {20, 20}}), iconTransformation(origin = {-116, 56}, extent = {{-20, -20}, {20, 20}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput TOut annotation(
@@ -76,23 +78,35 @@ model HeaPumPer_LG
         4.88,4.6,4.17,3.74; 293.15,6.3,5.76,5.22,4.95,4.5,4.06; 295.15,6.59,
         6.07,5.55,5.29,4.83,4.37])                                                                                                                                                     annotation(
     Placement(transformation(origin = {12, -98}, extent = {{-10, -10}, {10, 10}})));
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai1(k=scaFac)    annotation (
+      Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={48,130})));
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai2(k=scaFac)    annotation (
+      Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={54,80})));
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai3(k=scaFac)    annotation (
+      Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={60,36})));
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai4(k=scaFac)    annotation (
+      Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={64,-8})));
 equation
   connect(TSup, combiTable2Ds.u1) annotation(
     Line(points = {{-120, 60}, {-90, 60}, {-90, 110}, {-24, 110}}, color = {0, 0, 127}));
   connect(TOut, combiTable2Ds.u2) annotation(
     Line(points = {{-120, -42}, {-52, -42}, {-52, 98}, {-24, 98}}, color = {0, 0, 127}));
-  connect(combiTable2Ds.y, MaxHeaPumCapHea) annotation(
-    Line(points={{-1,104},{120,104},{120,86}},       color = {0, 0, 127}));
   connect(TSup, combiTable2Ds1.u1) annotation(
     Line(points={{-120,60},{-38,60},{-38,76},{-19,76}},          color = {0, 0, 127}));
   connect(TOut, combiTable2Ds1.u2) annotation(
     Line(points={{-120,-42},{-19,-42},{-19,64}},        color = {0, 0, 127}));
-  connect(combiTable2Ds1.y, MaxHeaPumCapCoo) annotation(
-    Line(points = {{4, 70}, {120, 70}, {120, 62}}, color = {0, 0, 127}));
-  connect(combiTable2Ds2.y, MinHeaPumCapHea) annotation(
-    Line(points={{24,29},{120,29},{120,34}},        color = {0, 0, 127}));
-  connect(combiTable2Ds21.y, MinHeaPumCapCoo) annotation(
-    Line(points={{23,-9},{120,-9},{120,8}},        color = {0, 0, 127}));
   connect(TSup, combiTable2Ds2.u1) annotation(
     Line(points={{-120,60},{-30,60},{-30,35},{1,35}},          color = {0, 0, 127}));
   connect(TSup, combiTable2Ds21.u1) annotation(
@@ -114,4 +128,20 @@ equation
   connect(combiTable2Ds221.y, COPCoo) annotation(
     Line(points={{23,-98},{120,-98},{120,-82}},        color = {0, 0, 127}));
 
+  connect(combiTable2Ds.y, gai1.u) annotation (Line(points={{-1,104},{20,104},{
+          20,130},{36,130}}, color={0,0,127}));
+  connect(combiTable2Ds1.y, gai2.u) annotation (Line(points={{4,70},{23,70},{23,
+          80},{42,80}}, color={0,0,127}));
+  connect(gai1.y, MaxHeaPumCapHea) annotation (Line(points={{60,130},{80,130},{
+          80,86},{120,86}}, color={0,0,127}));
+  connect(gai2.y, MaxHeaPumCapCoo) annotation (Line(points={{66,80},{86,80},{86,
+          62},{120,62}}, color={0,0,127}));
+  connect(combiTable2Ds2.y, gai3.u) annotation (Line(points={{24,29},{38,29},{
+          38,36},{48,36}}, color={0,0,127}));
+  connect(gai3.y, MinHeaPumCapHea) annotation (Line(points={{72,36},{88,36},{88,
+          34},{120,34}}, color={0,0,127}));
+  connect(combiTable2Ds21.y, gai4.u) annotation (Line(points={{23,-9},{38.5,-9},
+          {38.5,-8},{52,-8}}, color={0,0,127}));
+  connect(gai4.y, MinHeaPumCapCoo) annotation (Line(points={{76,-8},{88,-8},{88,
+          8},{120,8}}, color={0,0,127}));
 end HeaPumPer_LG;

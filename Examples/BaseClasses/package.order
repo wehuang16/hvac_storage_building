@@ -13,6 +13,7 @@ CoolingThermalStorageStatus
 UnservedLoadCalculation
 HvacWaterStorage
 HvacWaterStorage2
+HvacHotPcmStorage
 TankSOC
 VariableEffectiveness
 FmuPatch
