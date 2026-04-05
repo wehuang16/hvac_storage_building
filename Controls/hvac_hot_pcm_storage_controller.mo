@@ -13,8 +13,8 @@ model hvac_hot_pcm_storage_controller
   Buildings.Controls.OBC.CDL.Interfaces.IntegerInput tesHotStatus
     "-1 = fully discharged, 1 = fully charged, 0 = neither fully charged nor fully discharged"
     annotation (Placement(transformation(extent={{-142,-44},{-102,-4}})));
-  Modelica.Blocks.Tables.CombiTable2Ds systemModePre(table=[-999,0,1; 0,0,0; 1,
-        0,1; 2,2,4; 3,0,3],
+  Modelica.Blocks.Tables.CombiTable2Ds systemModePre(table=[-999,-1,0,1; 0,0,0,
+        0; 1,0,0,1; 2,2,2,4; 3,0,0,3],
                 extrapolation=Modelica.Blocks.Types.Extrapolation.NoExtrapolation)
     "0=do nothing; 1=chiller serves load; 2=chiller charge tes; 3= tes serves load; 4=hybrid charge; 5=hybrid serves"
     annotation (Placement(transformation(extent={{-30,36},{-10,56}})));
@@ -36,7 +36,6 @@ model hvac_hot_pcm_storage_controller
   Modelica.Blocks.Tables.CombiTable2Ds systemModeFinal(table=[-999,-1,0,1; 0,0,
         0,0; 1,1,1,1; 2,2,2,0; 3,1,3,3; 4,4,4,1],                 extrapolation
       =Modelica.Blocks.Types.Extrapolation.NoExtrapolation)
-    "0=do nothing; 1=chiller serves load; 2=chiller charge tes; 3= tes serves load; 4=hybrid charge; 5=hybrid serves"
     annotation (Placement(transformation(extent={{10,-24},{30,-4}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput LoadSidePumpFraction
     annotation (Placement(transformation(
@@ -74,12 +73,12 @@ equation
     annotation (Line(points={{-9,46},{0,46},{0,-8},{8,-8}}, color={0,0,127}));
   connect(intToRea1.y, systemModeFinal.u2) annotation (Line(points={{-56,-60},{
           -26,-60},{-26,-20},{8,-20}}, color={0,0,127}));
-  connect(equipmentControl.y[2], HeatPumpSidePumpFraction) annotation (Line(
-        points={{67,30},{84.5,30},{84.5,56},{120,56}}, color={0,0,127}));
-  connect(equipmentControl.y[3], LoadSidePumpFraction) annotation (Line(points=
-          {{67,30},{84,30},{84,24},{120,24}}, color={0,0,127}));
-  connect(equipmentControl.y[4], HeatPumpSetpoint) annotation (Line(points={{67,
-          30},{86,30},{86,-10},{120,-10}}, color={0,0,127}));
-  connect(equipmentControl.y[6], greThr3.u) annotation (Line(points={{67,30},{
-          62,30},{62,-90},{58,-90},{58,-86}}, color={0,0,127}));
+  connect(equipmentControl.y[1], HeatPumpSidePumpFraction) annotation (Line(
+        points={{67,30},{94,30},{94,56},{120,56}}, color={0,0,127}));
+  connect(equipmentControl.y[2], LoadSidePumpFraction) annotation (Line(points=
+          {{67,30},{94,30},{94,24},{120,24}}, color={0,0,127}));
+  connect(equipmentControl.y[3], HeatPumpSetpoint) annotation (Line(points={{67,
+          30},{94,30},{94,-10},{120,-10}}, color={0,0,127}));
+  connect(equipmentControl.y[4], greThr3.u) annotation (Line(points={{67,30},{
+          72,30},{72,-72},{48,-72},{48,-86},{58,-86}}, color={0,0,127}));
 end hvac_hot_pcm_storage_controller;

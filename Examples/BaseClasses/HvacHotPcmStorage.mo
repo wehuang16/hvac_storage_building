@@ -2,8 +2,9 @@ within hvac_storage_building.Examples.BaseClasses;
 model HvacHotPcmStorage
 
   parameter Integer numZon=1 "number of zones";
-  parameter Integer nSeg=20 "number of tank segments";
-  parameter Real heatLossRateTank=30 "heat loss rate in W/K";
+  parameter Real scaFacHeaPum=0.4 "scaling factor";
+
+  parameter Real heatLossRatePcm=10 "heat loss rate in W/K";
   parameter Real heatLossRateVolumizer=0.5 "heat loss rate in W/K";
 
     parameter Real ZoneAirVolume=1000 "m3";
@@ -24,7 +25,7 @@ parameter Real InsideAirTemperature=273.15+22 "K";
     annotation (Placement(transformation(origin={-136,26}, extent={{-20,-20},{
             20,20}})));
   HeatPumps.BaseClasses.HeaPumPer_LG
-                                  heaPumPer_LG
+                                  heaPumPer_LG(scaFac=scaFacHeaPum)
                                             annotation(
     Placement(transformation(origin = {-188, 30}, extent = {{-10, -10}, {10, 10}})));
 
@@ -45,15 +46,6 @@ parameter Real InsideAirTemperature=273.15+22 "K";
 parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
     "Thermal conductance at nominal flow, used to compute heat capacity";
 
-  Buildings.Fluid.Storage.StratifiedEnhanced tanHot(
-    m_flow_nominal=mSystemWater_flow_nominal,
-    VTan=1,
-    hTan=1.5,
-    dIns=0.02,
-    nSeg=nSeg,
-    redeclare package Medium = MediumWater,
-    T_start=311.95) annotation (Placement(transformation(origin={-20,8}, extent
-          ={{-10,-10},{10,10}})));
   Buildings.Fluid.Movers.FlowControlled_m_flow mov(redeclare package Medium = MediumWater, m_flow_nominal = mSystemWater_flow_nominal, addPowerToMedium = false)  annotation(
     Placement(transformation(origin = {-86, 76}, extent = {{-10, -10}, {10, 10}})));
   Buildings.Fluid.Movers.FlowControlled_m_flow mov1(redeclare package Medium = MediumWater, m_flow_nominal = mSystemWater_flow_nominal, addPowerToMedium = false)  annotation(
@@ -95,8 +87,6 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
         iconTransformation(extent={{-380,-20},{-340,20}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput ZonLoaAct[numZon]
     annotation (Placement(transformation(extent={{200,42},{240,84}})));
-  BaseClasses.TankLoss tankLossHot(nSeg=nSeg, heatLossRate=heatLossRateTank)
-    annotation (Placement(transformation(extent={{-90,-146},{-70,-126}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput ZonLoaReq[numZon] annotation
     (Placement(transformation(
         extent={{-20,-20},{20,20}},
@@ -135,10 +125,9 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
         iconTransformation(extent={{-380,42},{-340,82}})));
   HeatingThermalStorageStatus heatingThermalStorageStatus(
       HeatingTankFullTemperature=HeatingTankFullTemperature,
-      HeatingTankEmptyTemperature=HeatingTankEmptyTemperature)
+      HeatingTankEmptyTemperature=HeatingTankEmptyTemperature,
+    TankHysteresisTemperature=1)
     annotation (Placement(transformation(extent={{-278,192},{-258,212}})));
-  TankAverageTemperature tankAverageTemperatureHot
-    annotation (Placement(transformation(extent={{-318,190},{-298,210}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput ZonLoaUns[numZon]
     "unserved zone load" annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
@@ -146,9 +135,6 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
         origin={220,-60})));
   UnservedLoadCalculation unservedLoadCalculation[numZon]
     annotation (Placement(transformation(extent={{160,-16},{180,4}})));
-  TankSOC tankSOCHot(TankFullTemperature=HeatingTankFullTemperature,
-      TankEmptyTemperature=HeatingTankEmptyTemperature)
-    annotation (Placement(transformation(extent={{-286,228},{-266,248}})));
   Modelica.Blocks.Math.MultiSum multiSum(nu=numZon)
     annotation (Placement(transformation(extent={{208,16},{220,28}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput ZonLoaUnsHeaSum
@@ -173,9 +159,23 @@ parameter Modelica.Units.SI.ThermalConductance UA_nominal(min=0)=400
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con2(k=InsideAirTemperature)
                                                                           annotation(
     Placement(transformation(origin={-332,-140}, extent = {{-10, -10}, {10, 10}})));
-  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uMPCEna
-    "MPC enable signal" annotation (Placement(transformation(extent={{-382,88},
-            {-342,128}}), iconTransformation(extent={{-380,42},{-340,82}})));
+  PCM_48C_Theoretical_block pCM_48C_Theoretical_block(
+    redeclare package Medium = MediumWater,
+    mPCM_flow_nominal=mSystemWater_flow_nominal,
+    Tes_nominal(displayUnit="kWh") = 21600000) annotation (Placement(
+        transformation(
+        extent={{-13,-11},{13,11}},
+        rotation=270,
+        origin={-9,21})));
+  Buildings.HeatTransfer.Sources.PrescribedTemperature TA
+    "Temperature boundary condition"
+    annotation (Placement(transformation(extent={{-146,-194},{-126,-174}})));
+  Buildings.HeatTransfer.Convection.Interior convHot(
+    A=1,
+    hFixed=heatLossRatePcm,
+    til=Buildings.Types.Tilt.Wall)
+    "Convective heat transfer"
+    annotation (Placement(transformation(extent={{-78,-194},{-98,-174}})));
 equation
   connect(heaPumPer_LG.MaxHeaPumCapHea, simple_heat_pump_2d.MaxHeaPumCapHea)
     annotation (Line(points={{-176,39.2},{-166,39.2},{-166,45.3},{-157.1,45.3}},
@@ -238,9 +238,6 @@ equation
   connect(outside_air_temperature, heaPumPer_LG.TOut) annotation (Line(points={{
           -360,0},{-278,0},{-278,18},{-210,18},{-210,25.4},{-200,25.4}}, color={
           0,0,127}));
-  connect(tankLossHot.port_a, tanHot.heaPorVol) annotation (Line(points={{-69.4,
-          -136},{-64,-136},{-64,-44},{-32,-44},{-32,-24},{-30,-24},{-30,-20},{-34,
-          -20},{-34,-8},{-36,-8},{-36,8},{-20,8}}, color={191,0,0}));
   connect(volumizer.ports[2], jun1.port_1) annotation (Line(points={{62,88},{56,
           88},{56,-80},{-11,-80},{-11,-64}}, color={0,127,255}));
   connect(volumizerLoss.port_a, volumizer.heatPort) annotation (Line(points={{18.6,
@@ -274,12 +271,6 @@ equation
   connect(heatingThermalStorageStatus.yStoMod, hvac_pcm_storage_controller.tesHotStatus)
     annotation (Line(points={{-256,202},{-190,202},{-190,149.6},{-180.2,149.6}},
         color={255,127,0}));
-  connect(tankAverageTemperatureHot.avgTem, heatingThermalStorageStatus.TSto)
-    annotation (Line(points={{-296,200},{-288,200},{-288,202},{-280.2,202}},
-        color={0,0,127}));
-  connect(tanHot.heaPorVol, tankAverageTemperatureHot.port_a) annotation (Line(
-        points={{-20,8},{-144,8},{-144,58},{-356,58},{-356,200},{-318.6,200}},
-        color={191,0,0}));
   connect(zoneBlock.zonLoaAct, unservedLoadCalculation.ZonLoaAct) annotation (
       Line(points={{135.478,60.2857},{135.478,-11.9},{158,-11.9}}, color={0,0,127}));
   connect(ZonLoaReq, unservedLoadCalculation.ZonLoaReq) annotation (Line(points
@@ -287,11 +278,6 @@ equation
           0},{158,0}}, color={0,0,127}));
   connect(unservedLoadCalculation.ZonLoaUns, ZonLoaUns) annotation (Line(points
         ={{182,-6},{194,-6},{194,-60},{220,-60}}, color={0,0,127}));
-  connect(tanHot.port_b, jun1.port_3) annotation (Line(points={{-20,-2},{-20,
-          -46},{-21,-46},{-21,-54}}, color={0,127,255}));
-  connect(tankAverageTemperatureHot.avgTem, tankSOCHot.TTan) annotation (Line(
-        points={{-296,200},{-288,200},{-288,222},{-296,222},{-296,238},{-288.2,
-          238}}, color={0,0,127}));
   connect(unservedLoadCalculation.ZonLoaUnsHea, multiSum.u) annotation (Line(
         points={{181.8,-0.4},{202,-0.4},{202,22},{208,22}}, color={0,0,127}));
   connect(multiSum.y, ZonLoaUnsHeaSum) annotation (Line(points={{221.02,22},{
@@ -301,20 +287,29 @@ equation
         color={0,0,127}));
   connect(multiSum1.y, ZonLoaUnsCooSum) annotation (Line(points={{197.02,-100},
           {238,-100},{238,-102},{264,-102}}, color={0,0,127}));
-  connect(storage_room_air_temperature.y, tankLossHot.inside_air_temperature)
-    annotation (Line(points={{-240,-80},{-140,-80},{-140,-136},{-92,-136}},
-        color={0,0,127}));
   connect(storage_room_air_temperature.y, volumizerLoss.inside_air_temperature)
     annotation (Line(points={{-240,-80},{-96,-80},{-96,180},{-4,180}}, color={0,
           0,127}));
-  connect(jun.port_3, tanHot.port_a) annotation (Line(points={{-28,84},{-24,84},
-          {-24,18},{-20,18}}, color={0,127,255}));
   connect(con1.y, simple_heat_pump_2d.HeaPumMod) annotation (Line(points={{-60,42},
           {-48,42},{-48,23.4},{-114.8,23.4}}, color={255,0,255}));
   connect(outside_air_temperature, storage_room_air_temperature.u1) annotation
     (Line(points={{-360,0},{-313,0},{-313,-74},{-264,-74}}, color={0,0,127}));
   connect(con2.y, storage_room_air_temperature.u2) annotation (Line(points={{
           -320,-140},{-294,-140},{-294,-86},{-264,-86}}, color={0,0,127}));
+  connect(jun.port_3, pCM_48C_Theoretical_block.port_a) annotation (Line(points
+        ={{-28,84},{-28,40},{-0.4,40},{-0.4,34.4}}, color={0,127,255}));
+  connect(pCM_48C_Theoretical_block.port_b, jun1.port_3) annotation (Line(
+        points={{-0.2,7.6},{-0.2,-48},{-21,-48},{-21,-54}}, color={0,127,255}));
+  connect(TA.port,convHot. fluid)
+    annotation (Line(points={{-126,-184},{-98,-184}},
+                                                color={191,0,0}));
+  connect(convHot.solid, pCM_48C_Theoretical_block.heaPorOutside) annotation (
+      Line(points={{-78,-184},{22,-184},{22,19.2},{2.4,19.2}}, color={191,0,0}));
+  connect(storage_room_air_temperature.y, TA.T) annotation (Line(points={{-240,-80},
+          {-232,-80},{-232,-184},{-148,-184}}, color={0,0,127}));
+  connect(pCM_48C_Theoretical_block.TPCM, heatingThermalStorageStatus.TSto)
+    annotation (Line(points={{-4.8,7},{-4.8,-34},{-400,-34},{-400,202},{-280.2,202}},
+        color={0,0,127}));
   annotation(
     experiment(StartTime = 0, StopTime = 432000, Tolerance = 1e-06, Interval = 60),
     __OpenModelica_commandLineOptions = "--matchingAlgorithm=PFPlusExt --indexReductionMethod=dynamicStateSelection -d=initialization,NLSanalyticJacobian",

@@ -71,7 +71,7 @@ parameter Modelica.Units.SI.MassFlowRate mPCM_flow_nominal=0.3;
         extent={{-10,-11},{10,11}},
         rotation=180,
         origin={172,9})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant pump_flow_rate(k=0.35)
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant pump_flow_rate(k=-0.35)
     "pump_flow_rate in unit of kg/s"
     annotation (Placement(transformation(extent={{-308,60},{-288,80}})));
   Buildings.HeatTransfer.Sources.PrescribedTemperature TA
