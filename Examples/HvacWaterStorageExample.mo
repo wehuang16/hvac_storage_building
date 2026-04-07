@@ -1,5 +1,6 @@
 within hvac_storage_building.Examples;
 model HvacWaterStorageExample
+  extends Modelica.Icons.Example;
   BaseClasses.HvacWaterStorage2 hvacWaterStorage
     annotation (Placement(transformation(extent={{2,-4},{42,16}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable dailyScheduleTable(
