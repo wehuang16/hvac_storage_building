@@ -1,6 +1,7 @@
 hvac_water_storage_example_original
 HvacWaterStorageExample
 HvacPcmStorageExample
+HvacPcmStorageExample_WithWaterVolume
 spawn_building_unconditioned
 PCM_58C_Theoretical
 PCM_48C_Theoretical

@@ -14,10 +14,12 @@ UnservedLoadCalculation
 HvacWaterStorage
 HvacWaterStorage2
 HvacHotPcmStorage
+HvacHotPcmStorage_WithWaterVolume
 TankSOC
 VariableEffectiveness
 FmuPatch
 realSwitch
 PCM_48C_Theoretical_block
+PCM_48C_Theoretical_block_WithWaterVolume
 Subsequences
 Validation
