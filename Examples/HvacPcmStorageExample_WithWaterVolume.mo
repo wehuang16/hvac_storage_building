@@ -19,7 +19,7 @@ model HvacPcmStorageExample_WithWaterVolume
     annotation (Placement(transformation(extent={{-112,12},{-92,32}})));
   Buildings.Controls.OBC.UnitConversions.From_degC from_degC
     annotation (Placement(transformation(extent={{-40,-4},{-20,16}})));
-  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai(k=4)
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai(k=3)
     annotation (Placement(transformation(extent={{-40,-56},{-20,-36}})));
 equation
   connect(combiTimeTable.y[1], from_degC.u) annotation (Line(points={{-91,22},{

@@ -3,7 +3,7 @@ model HvacWaterStorage2
 
   parameter Integer numZon=6 "number of zones";
   parameter Integer nSeg=20 "number of tank segments";
-  parameter Real heatLossRateTank=0.5 "heat loss rate in W/K";
+  parameter Real heatLossRateTank=1 "heat loss rate in W/K";
   parameter Real heatLossRateVolumizer=0.03 "heat loss rate in W/K";
 
     parameter Real ZoneAirVolume=1000 "m3";

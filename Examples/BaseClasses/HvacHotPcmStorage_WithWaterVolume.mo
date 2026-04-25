@@ -2,22 +2,22 @@ within hvac_storage_building.Examples.BaseClasses;
 model HvacHotPcmStorage_WithWaterVolume
 
   parameter Integer numZon=1 "number of zones";
-  parameter Real scaFacHeaPum=0.4 "scaling factor";
+  parameter Real scaFacHeaPum=0.3 "scaling factor";
 
-  parameter Real heatLossRatePcm=10 "heat loss rate in W/K";
-  parameter Real heatLossRateVolumizer=0.5 "heat loss rate in W/K";
+  parameter Real heatLossRatePcm=1 "heat loss rate in W/K";
+  parameter Real heatLossRateVolumizer=0.06 "heat loss rate in W/K";
 
     parameter Real ZoneAirVolume=1000 "m3";
-    parameter Real volumizerVolume=0.1 "m3";
+    parameter Real volumizerVolume=0.01 "m3";
     parameter Real heatPumpCyclingWaitTime=600 "s";
   parameter Real HeatingAmbientTemperature=273.15+22 "K";
   parameter Real CoolingAmbientTemperature=273.15+22 "K";
 parameter Real InsideAirTemperature=273.15+22 "K";
 
     parameter Real HeatingTankFullTemperature=273.15+54 "K";
-  parameter Real HeatingTankEmptyTemperature=273.15+38 "K";
+  parameter Real HeatingTankEmptyTemperature=273.15+40 "K";
   parameter Real CoolingTankFullTemperature=273.15+8 "K";
-  parameter Real CoolingTankEmptyTemperature=273.15+14 "K";
+  parameter Real CoolingTankEmptyTemperature=273.15+15 "K";
 
   HeatPumps.simple_heat_pump_2d simple_heat_pump_2d(redeclare package
       Medium_con = MediumWater, mCon_flow_nominal=mSystemWater_flow_nominal,
